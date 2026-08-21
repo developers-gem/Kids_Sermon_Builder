@@ -312,10 +312,10 @@ cp server/.env.example server/.env
 # if you want AI generation/narration to work (both fail gracefully without it)
 
 npm run seed --workspace server   # loads the 6 built-in stories into MongoDB
-
 npm run dev:server          # http://localhost:4000
 npm run dev:web             # http://localhost:5173 (proxies /api to :4000)
 ```
+
 
 **Note on verification:** this environment has no MongoDB reachable (no local
 `mongod`, and MongoDB's download servers aren't on the sandbox's network
