@@ -16,5 +16,8 @@
     "build": "npm run build:packages && npm run build --workspace apps/web && npm run build --workspace server",
     "seed": "npm run build:packages && npm run seed --workspace server",
     "lint": "npm run lint --workspace apps/web && npm run lint --workspace server"
+  },
+  "dependencies": {
+    "tailwindcss": "^4.3.3"
   }
 }
