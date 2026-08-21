@@ -1,0 +1,20 @@
+{
+  "name": "kids-sermon-builder",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace apps/web",
+    "dev:server": "npm run dev --workspace server",
+    "build:packages": "npm run build --workspace @ksb/types && npm run build --workspace @ksb/validation && npm run build --workspace @ksb/constants",
+    "build:web": "npm run build:packages && npm run build --workspace apps/web",
+    "build:server": "npm run build:packages && npm run build --workspace server",
+    "build": "npm run build:packages && npm run build --workspace apps/web && npm run build --workspace server",
+    "seed": "npm run build:packages && npm run seed --workspace server",
+    "lint": "npm run lint --workspace apps/web && npm run lint --workspace server"
+  }
+}

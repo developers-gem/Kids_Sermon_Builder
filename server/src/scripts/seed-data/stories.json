@@ -1,0 +1,413 @@
+[
+  {
+    "id": "noah",
+    "title": "Noah and the Big Boat",
+    "reference": "Genesis 6–9",
+    "theme": "God keeps His promises",
+    "ageRange": "Ages 3–8",
+    "image": "/assets/story-noah.jpg",
+    "imageAlt": "Paper-cut illustration of Noah's ark with animals and a rainbow",
+    "bigIdea": "God always does what He says He will do.",
+    "tellIt": [
+      "God asked Noah to build a giant boat, even though it had never rained before. Noah obeyed — hammer, hammer, hammer — for a very long time.",
+      "Two by two the animals walked in: stompy elephants, hoppy rabbits, slithery snakes. Then God shut the door and the rain came down.",
+      "When the water dried up, God painted a rainbow in the sky and promised: I will never flood the whole earth again."
+    ],
+    "askThem": [
+      "What is something hard that God might ask you to do?",
+      "What do you think of when you see a rainbow?",
+      "Who is someone you can trust to keep a promise?"
+    ],
+    "memoryVerse": {
+      "text": "God is not a man, that he should lie... Has he said, and will he not do it?",
+      "reference": "Numbers 23:19",
+      "motions": [
+        "\"God is not a man\" — point up, then shake head",
+        "\"that he should lie\" — cover mouth",
+        "\"Has he said\" — hand to ear",
+        "\"and will he not do it?\" — big thumbs up"
+      ]
+    },
+    "games": [
+      {
+        "title": "Animal Parade Two-by-Two",
+        "minutes": 8,
+        "supplies": "Animal picture cards (2 of each)",
+        "steps": [
+          "Give every child one animal card and keep it secret.",
+          "On go, everyone makes their animal's sound and finds their match.",
+          "Matched pairs march onto the 'ark' (a taped rectangle on the floor)."
+        ]
+      },
+      {
+        "title": "Rainbow Freeze",
+        "minutes": 6,
+        "supplies": "Colored scarves or paper strips, music",
+        "steps": [
+          "Kids dance with a colored scarf while music plays.",
+          "When the music stops, call a color — those kids shout the promise: 'God keeps His promises!'",
+          "Play until every color has been called."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "The Promise Jar",
+      "minutes": 5,
+      "supplies": "Clear jar, water, a few drops of oil, food coloring",
+      "steps": [
+        "Fill the jar with water — this is the flood.",
+        "Add drops of colored oil and stir hard; the color always rises back to the top.",
+        "Say: no matter how much you shake it, the oil comes back up — that's how sure God's promises are."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-noah.jpg",
+      "alt": "Coloring page line art of Noah's ark with animals and a rainbow",
+      "caption": "Ark & rainbow — add a color for each promise you can name."
+    },
+    "prayer": "Thank You, God, that You always keep Your promises. Help us to trust and obey like Noah. Amen.",
+    "featured": true
+  },
+  {
+    "id": "david",
+    "title": "David and Goliath",
+    "reference": "1 Samuel 17",
+    "theme": "God makes brave hearts",
+    "ageRange": "Ages 4–10",
+    "image": "/assets/story-david.jpg",
+    "imageAlt": "Paper-cut illustration of young David facing the giant Goliath",
+    "bigIdea": "You don't have to be big — God is big for you.",
+    "tellIt": [
+      "A giant named Goliath shouted at God's people every single day, and every single day the soldiers were afraid.",
+      "David was just a shepherd boy delivering bread and cheese. But he said, 'The Lord who saved me from the lion will save me from this giant.'",
+      "One smooth stone, one swing of the sling — and the giant fell. David wasn't strong; God was."
+    ],
+    "askThem": [
+      "What feels like a giant to you right now?",
+      "How did David get brave?",
+      "What can you say to yourself when you are scared?"
+    ],
+    "memoryVerse": {
+      "text": "The Lord is my strength and my shield; my heart trusts in him.",
+      "reference": "Psalm 28:7",
+      "motions": [
+        "\"The Lord is my strength\" — flex both arms",
+        "\"and my shield\" — arms crossed in front",
+        "\"my heart trusts\" — hands over heart",
+        "\"in him\" — point up"
+      ]
+    },
+    "games": [
+      {
+        "title": "Five Smooth Stones Toss",
+        "minutes": 10,
+        "supplies": "5 crumpled paper balls, a bucket, giant cutout",
+        "steps": [
+          "Stand a cardboard 'giant' with a hole cut where the forehead is.",
+          "Each child gets five paper stones and three steps back for each hit.",
+          "After each throw, the group shouts the memory verse together."
+        ]
+      },
+      {
+        "title": "Giant Says",
+        "minutes": 6,
+        "supplies": "None",
+        "steps": [
+          "Play Simon Says, but the leader is the giant using a big scary voice.",
+          "Kids only obey commands that begin with 'God says'.",
+          "Point out: we listen to God's voice, not the giant's."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "The Unliftable Backpack",
+      "minutes": 5,
+      "supplies": "A backpack, heavy books, a strong helper",
+      "steps": [
+        "Load a backpack with books until a child can't lift it alone.",
+        "Invite a grown-up to lift it while the child keeps a hand on the strap.",
+        "Say: the problem didn't shrink — someone stronger carried it. That's God with us."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-david.jpg",
+      "alt": "Coloring page line art of David with a sling facing Goliath",
+      "caption": "David & Goliath — write your 'giant' on the biggest stone."
+    },
+    "prayer": "God, You are stronger than anything that scares us. Make our hearts brave today. Amen.",
+    "featured": false
+  },
+  {
+    "id": "daniel",
+    "title": "Daniel in the Lions' Den",
+    "reference": "Daniel 6",
+    "theme": "Pray anyway",
+    "ageRange": "Ages 5–11",
+    "image": "/assets/story-daniel.jpg",
+    "imageAlt": "Paper-cut illustration of Daniel praying among calm lions",
+    "bigIdea": "God is with us even in scary places.",
+    "tellIt": [
+      "Daniel prayed three times a day — morning, noon and night — with his window wide open.",
+      "A new law said, 'Pray only to the king!' Daniel opened his window and prayed to God anyway.",
+      "They threw him to the lions, but God shut the lions' mouths. In the morning Daniel called out, 'I'm still here!'"
+    ],
+    "askThem": [
+      "When is a good time for you to pray each day?",
+      "Have you ever done the right thing when it was hard?",
+      "What do you think Daniel prayed about in the den?"
+    ],
+    "memoryVerse": {
+      "text": "Do not be afraid, for the Lord your God will be with you wherever you go.",
+      "reference": "Joshua 1:9",
+      "motions": [
+        "\"Do not be afraid\" — hands on cheeks, then wave 'no'",
+        "\"the Lord your God\" — point up",
+        "\"will be with you\" — hug yourself",
+        "\"wherever you go\" — march in place"
+      ]
+    },
+    "games": [
+      {
+        "title": "Sleeping Lions",
+        "minutes": 7,
+        "supplies": "None",
+        "steps": [
+          "Half the class are lions lying down with 'shut mouths'; the rest are Daniels tiptoeing past.",
+          "Lions may roar only when the leader rings a bell — but no touching.",
+          "Swap roles and talk about how it felt to walk past the lions."
+        ]
+      },
+      {
+        "title": "Three Times a Day Relay",
+        "minutes": 8,
+        "supplies": "Sun, cloud and moon cards; two baskets",
+        "steps": [
+          "Scatter time-of-day cards across the room.",
+          "Teams race to collect one sun, one cloud and one moon.",
+          "Each returning runner kneels and says one short prayer word: thanks, sorry, please."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "The Flashlight in the Box",
+      "minutes": 4,
+      "supplies": "Cardboard box, flashlight",
+      "steps": [
+        "Let a child look into a dark closed box — scary and empty.",
+        "Drop in a lit flashlight and close it again, then look through the peephole.",
+        "Say: the box didn't change, but the light did. God's presence is our light in dark places."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-daniel.jpg",
+      "alt": "Coloring page line art of Daniel praying with lions",
+      "caption": "Daniel & the lions — draw a window with the sun, clouds and moon."
+    },
+    "prayer": "Lord, help us pray to You every day, even when it is hard. Thank You for staying close. Amen.",
+    "featured": false
+  },
+  {
+    "id": "loaves",
+    "title": "Five Loaves and Two Fish",
+    "reference": "John 6:1–14",
+    "theme": "God uses small gifts",
+    "ageRange": "Ages 3–9",
+    "image": "/assets/story-loaves.jpg",
+    "imageAlt": "Paper-cut illustration of Jesus feeding a crowd with loaves and fish",
+    "bigIdea": "Give Jesus your little, and He does a lot.",
+    "tellIt": [
+      "Thousands of people sat on a grassy hill listening to Jesus, and their tummies started to rumble.",
+      "One boy had five little loaves and two small fish. He gave it all away to Jesus.",
+      "Jesus said thank You to God, broke the bread — and it kept coming and coming. Everyone ate, and twelve baskets were left over!"
+    ],
+    "askThem": [
+      "What is something small you could share this week?",
+      "How do you think the boy felt handing over his lunch?",
+      "What do we say to God before we eat?"
+    ],
+    "memoryVerse": {
+      "text": "Give, and it will be given to you.",
+      "reference": "Luke 6:38",
+      "motions": [
+        "\"Give\" — hands out, palms up",
+        "\"and it will be given\" — hands scoop back in",
+        "\"to you\" — point to a friend, then yourself"
+      ]
+    },
+    "games": [
+      {
+        "title": "Basket Pass",
+        "minutes": 6,
+        "supplies": "Basket, soft bread and fish props, music",
+        "steps": [
+          "Pass the basket around the circle while music plays.",
+          "When it stops, that child names one thing they can share.",
+          "Keep going until the basket has visited everyone."
+        ]
+      },
+      {
+        "title": "Twelve Baskets Scramble",
+        "minutes": 8,
+        "supplies": "12 paper baskets, paper loaves and fish",
+        "steps": [
+          "Hide paper loaves and fish around the room.",
+          "Teams gather them into twelve baskets — no basket may be left empty.",
+          "Count together to twelve and cheer."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "One Candle, Many Candles",
+      "minutes": 4,
+      "supplies": "Battery tea lights (one lit, many unlit)",
+      "steps": [
+        "Hold up one small light in a dim room.",
+        "Use it to 'pass' light to every child's tea light one by one.",
+        "Say: the first light never got smaller — that's what happens when we share what we have."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-loaves.jpg",
+      "alt": "Coloring page line art of a boy holding a basket of loaves and fish",
+      "caption": "Loaves & fish — draw what you will share this week in the basket."
+    },
+    "prayer": "Jesus, here is our little. Please use it to bless a lot of people. Amen.",
+    "featured": false
+  },
+  {
+    "id": "samaritan",
+    "title": "The Good Samaritan",
+    "reference": "Luke 10:25–37",
+    "theme": "Love your neighbor",
+    "ageRange": "Ages 4–10",
+    "image": "/assets/story-samaritan.jpg",
+    "imageAlt": "Paper-cut illustration of the Good Samaritan with a donkey on a road",
+    "bigIdea": "A neighbor is anyone who needs kindness.",
+    "tellIt": [
+      "A man walking a lonely road was hurt by robbers and left beside the path.",
+      "Two important people saw him — and walked right past on the other side.",
+      "Then a Samaritan, someone people said didn't belong, stopped. He bandaged the man, put him on his donkey and paid for his care."
+    ],
+    "askThem": [
+      "Who is someone at school that people walk past?",
+      "What is one kind thing you can do today?",
+      "Why do you think the first two didn't stop?"
+    ],
+    "memoryVerse": {
+      "text": "Love your neighbor as yourself.",
+      "reference": "Mark 12:31",
+      "motions": [
+        "\"Love\" — heart shape with hands",
+        "\"your neighbor\" — point all around the room",
+        "\"as yourself\" — hands on chest"
+      ]
+    },
+    "games": [
+      {
+        "title": "Bandage Relay",
+        "minutes": 10,
+        "supplies": "Rolls of crepe paper or gauze",
+        "steps": [
+          "In pairs, one child gently wraps their partner's arm with crepe paper.",
+          "Race to the 'inn' (a chair) and back, then swap roles.",
+          "Talk about how helping takes time and care, not just words."
+        ]
+      },
+      {
+        "title": "Walk On By / Stop and Help",
+        "minutes": 7,
+        "supplies": "Situation cards",
+        "steps": [
+          "Read a card: 'Someone drops their books', 'A new kid sits alone'.",
+          "Kids run to the STOP side or the WALK ON side of the room.",
+          "Ask a volunteer to act out what stopping would look like."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "The Heavy Bag Nobody Carried",
+      "minutes": 5,
+      "supplies": "A grocery bag full of items (make it spill)",
+      "steps": [
+        "Walk in carrying an overloaded bag and let it spill on the floor.",
+        "Wait quietly and see who helps; thank the helpers warmly.",
+        "Say: noticing is the first half of loving your neighbor."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-samaritan.jpg",
+      "alt": "Coloring page line art of the Good Samaritan helping a traveler",
+      "caption": "The Good Samaritan — draw yourself somewhere on the road helping."
+    },
+    "prayer": "Jesus, give us eyes that notice and hands that help. Amen.",
+    "featured": false
+  },
+  {
+    "id": "sheep",
+    "title": "The Lost Sheep",
+    "reference": "Luke 15:1–7",
+    "theme": "You are worth searching for",
+    "ageRange": "Ages 3–8",
+    "image": "/assets/story-sheep.jpg",
+    "imageAlt": "Paper-cut illustration of a shepherd and his flock at sunset",
+    "bigIdea": "God comes looking for you — every time.",
+    "tellIt": [
+      "A shepherd counted his sheep at sunset: ninety-seven, ninety-eight, ninety-nine... one was missing!",
+      "He left the ninety-nine safe and searched the rocks and thorny bushes until he heard a small 'baa'.",
+      "He lifted that sheep onto his shoulders, carried it home and threw a party. That's how heaven feels about you."
+    ],
+    "askThem": [
+      "Have you ever been lost? How did it feel to be found?",
+      "How does the shepherd feel about the one sheep?",
+      "Who can we help feel welcome here?"
+    ],
+    "memoryVerse": {
+      "text": "I am the good shepherd. I know my sheep.",
+      "reference": "John 10:14",
+      "motions": [
+        "\"I am the good shepherd\" — hold an invisible staff",
+        "\"I know\" — tap your head",
+        "\"my sheep\" — fluffy hands beside your ears"
+      ]
+    },
+    "games": [
+      {
+        "title": "Baa Baa Blindfold",
+        "minutes": 8,
+        "supplies": "One blindfold",
+        "steps": [
+          "One blindfolded 'shepherd' stands in the middle of the circle.",
+          "A hidden child baas once; the shepherd points toward the sound.",
+          "Everyone cheers when the lost sheep is found."
+        ]
+      },
+      {
+        "title": "Count the Flock",
+        "minutes": 6,
+        "supplies": "100 cotton balls, a hidden 'lost' one",
+        "steps": [
+          "Kids count cotton-ball sheep into a pen in groups of ten.",
+          "Discover one is missing and search the room together.",
+          "Celebrate loudly when it's found — party sound effects encouraged."
+        ]
+      }
+    ],
+    "objectLesson": {
+      "title": "The Missing Puzzle Piece",
+      "minutes": 4,
+      "supplies": "A small puzzle with one piece hidden in your pocket",
+      "steps": [
+        "Build the puzzle together and notice the hole in the middle.",
+        "Ask: does the picture still feel finished?",
+        "Produce the last piece and say: that's why the shepherd went looking. Everyone matters."
+      ]
+    },
+    "coloringPage": {
+      "image": "/assets/color-sheep.jpg",
+      "alt": "Coloring page line art of a shepherd carrying a lamb",
+      "caption": "The Lost Sheep — hide one extra sheep in the picture for a friend to find."
+    },
+    "prayer": "Good Shepherd, thank You for knowing our names and coming to find us. Amen.",
+    "featured": false
+  }
+]

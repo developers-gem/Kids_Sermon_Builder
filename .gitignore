@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build files
+dist/
+
+# Vite cache
+node_modules/.vite/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/

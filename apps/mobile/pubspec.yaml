@@ -1,0 +1,52 @@
+name: kids_sermon_builder
+description: Kids Sermon Builder — build a complete children's Bible lesson in minutes.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  http: ^1.2.2
+
+  # State management — Provider over Riverpod/Bloc: no code generation step,
+  # easiest to review by hand since this code can't be compiled in the
+  # environment it was written in.
+  provider: ^6.1.2
+
+  # Secure storage for the refresh token; access token stays in memory only
+  # (same policy as the web app).
+  flutter_secure_storage: ^9.2.2
+
+  # Lightweight local prefs — narration voice/style choice only (never
+  # anything sensitive; the refresh token uses flutter_secure_storage above).
+  shared_preferences: ^2.3.2
+
+  # Audio playback for narration (story, memory verse, games, object lesson,
+  # prayer) — the same cached-URL endpoints the web app uses.
+  audioplayers: ^6.1.0
+
+  # Cached network images for story illustrations / coloring pages.
+  cached_network_image: ^3.4.1
+
+  url_launcher: ^6.3.1
+  intl: ^0.19.0
+
+  # For "Download PDF" — write the downloaded bytes to a real file, then
+  # hand off to the OS share sheet so the person can open it in a PDF
+  # viewer, save it, or send it on, same intent as the web app's browser
+  # download.
+  path_provider: ^2.1.4
+  share_plus: ^10.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
