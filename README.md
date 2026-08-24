@@ -322,8 +322,8 @@ npm run dev:web             # http://localhost:5173 (proxies /api to :4000)
 
 ```bash
 
- email :"kids-sermon-builder@admin.com",
- password :"adminHelper@123"
+ email :kidsBermonBuilder@admin.com,
+ password :adminExample@123
 
  ``` 
 

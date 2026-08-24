@@ -29,6 +29,7 @@ export function LoginPage() {
     }
   };
 
+
   return (
     <main className="mx-auto max-w-md px-4 pb-20 pt-16 sm:px-6">
       <h1 className="text-3xl font-extrabold">Log in</h1>
@@ -58,6 +59,7 @@ export function LoginPage() {
             autoComplete="current-password"
             className="mt-2 w-full rounded-xl border-2 border-border bg-card px-4 py-3 outline-none focus:border-primary"
           />
+          <div className="mt-2 text-right"> <Link to="/reset-password" className="text-sm font-bold text-accent underline hover:opacity-80" > Forgot Password? </Link> </div>
         </label>
 
         {error && (
@@ -74,6 +76,7 @@ export function LoginPage() {
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
           {loading ? "Logging in…" : "Log in"}
         </button>
+        
       </form>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">

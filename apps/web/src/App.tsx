@@ -24,6 +24,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/shared/:token" element={<SharedLessonPage />} />
+        {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
         <Route element={<ProtectedRoute />}>
           <Route path="/my-lessons" element={<MyLessonsPage />} />
           <Route path="/lesson/:id" element={<LessonDetailPage />} />
