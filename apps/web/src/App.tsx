@@ -13,7 +13,7 @@ import { LessonDetailPage } from "./pages/LessonDetailPage";
 import { SharedLessonPage } from "./pages/SharedLessonPage";
 import { AdminStoriesPage } from "./pages/AdminStoriesPage";
 import { AdminStoryEditorPage } from "./pages/AdminStoryEditorPage";
-
+import { ResetPasswordPage } from "./pages/ResetPassword";
 export function App() {
   return (
     <Routes>
@@ -24,7 +24,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/shared/:token" element={<SharedLessonPage />} />
-        {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/my-lessons" element={<MyLessonsPage />} />
           <Route path="/lesson/:id" element={<LessonDetailPage />} />
