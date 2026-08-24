@@ -5,6 +5,8 @@ original TanStack Start prototype (`sermon-sparkle-story.lovable.app`) to
 React + Vite / Express + MongoDB / Flutter per the architecture in the
 prompt package.
 
+
+
 ```
 apps/web       React + Vite + TypeScript + React Router web app
 apps/mobile    Flutter mobile app (Phase 6 — not started)
@@ -316,6 +318,14 @@ npm run dev:server          # http://localhost:4000
 npm run dev:web             # http://localhost:5173 (proxies /api to :4000)
 ```
 
+**Admin Login Details**
+
+```bash
+
+ email :"kids-sermon-builder@admin.com",
+ password :"adminHelper@123"
+
+ ``` 
 
 **Note on verification:** this environment has no MongoDB reachable (no local
 `mongod`, and MongoDB's download servers aren't on the sandbox's network

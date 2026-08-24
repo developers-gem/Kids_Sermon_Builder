@@ -28,20 +28,53 @@ function publicUser(user: { _id: unknown; name: string; email: string; role: str
 }
 
 export const authController = {
-  register: asyncHandler(async (req: Request, res: Response) => {
-    const { name, email, password } = req.body as { name: string; email: string; password: string };
-    const existing = await User.findOne({ email });
-    if (existing) throw AppError.validation("An account with this email already exists.");
+ register: asyncHandler(async (req: Request, res: Response) => {
+  const { name, email, password } = req.body as {
+    name: string;
+    email: string;
+    password: string;
+  };
 
-    const passwordHash = await hashPassword(password);
-    const user = await User.create({ name, email, passwordHash });
+  const existing = await User.findOne({ email });
 
-    const accessToken = signAccessToken({ sub: String(user._id), role: user.role as "user" | "admin" });
-    const refreshToken = signRefreshToken({ sub: String(user._id), ver: user.refreshTokenVersion });
-    setRefreshCookie(res, refreshToken);
+  if (existing) {
+    throw AppError.validation("An account with this email already exists.");
+  }
 
-    created(res, { user: publicUser(user), accessToken }, "Account created");
-  }),
+  const passwordHash = await hashPassword(password);
+
+  // Create the user with admin role
+  const user = await User.create({
+    name,
+    email,
+    passwordHash,
+    role: "admin",
+  });
+
+  // Access token contains the user's ID and role
+  const accessToken = signAccessToken({
+    sub: String(user._id),
+    role: user.role as "user" | "admin",
+  });
+
+  // Create refresh token
+  const refreshToken = signRefreshToken({
+    sub: String(user._id),
+    ver: user.refreshTokenVersion,
+  });
+
+  // Store refresh token in httpOnly cookie
+  setRefreshCookie(res, refreshToken);
+
+  created(
+    res,
+    {
+      user: publicUser(user),
+      accessToken,
+    },
+    "Admin account created"
+  );
+}),
 
   login: asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body as { email: string; password: string };
