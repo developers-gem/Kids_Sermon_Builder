@@ -28,7 +28,8 @@ function publicUser(user: { _id: unknown; name: string; email: string; role: str
 }
 
 export const authController = {
- register: asyncHandler(async (req: Request, res: Response) => {
+  // POST /api/auth/register
+  /*register: asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body as {
     name: string;
     email: string;
@@ -74,8 +75,23 @@ export const authController = {
     },
     "Admin account created"
   );
-}),
+}) */
+  register: asyncHandler(async (req: Request, res: Response) => {
+    const { name, email, password } = req.body as { name: string; email: string; password: string };
+    const existing = await User.findOne({ email });
+    if (existing) throw AppError.validation("An account with this email already exists.");
 
+    const passwordHash = await hashPassword(password);
+    const user = await User.create({ name, email, passwordHash });
+
+    const accessToken = signAccessToken({ sub: String(user._id), role: user.role as "user" | "admin" });
+    const refreshToken = signRefreshToken({ sub: String(user._id), ver: user.refreshTokenVersion });
+    setRefreshCookie(res, refreshToken);
+
+    created(res, { user: publicUser(user), accessToken }, "Account created");
+  }),
+
+    // Post /api/auth/login
   login: asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body as { email: string; password: string };
     const user = await User.findOne({ email }).select("+passwordHash");
@@ -91,6 +107,7 @@ export const authController = {
     ok(res, { user: publicUser(user), accessToken }, "Logged in");
   }),
 
+  // POST /api/auth/refresh
   refresh: asyncHandler(async (req: Request, res: Response) => {
     const token = (req as unknown as { cookies?: Record<string, string> }).cookies?.["ksb_refresh_token"];
     if (!token) throw AppError.authRequired("No refresh token provided.");
@@ -111,11 +128,13 @@ export const authController = {
     ok(res, { accessToken });
   }),
 
+  // POST /api/auth/logout
   logout: asyncHandler(async (_req: Request, res: Response) => {
     res.clearCookie("ksb_refresh_token", { path: "/api/auth" });
     ok(res, {}, "Logged out");
   }),
 
+  // GET /api/auth/me
   me: asyncHandler(async (req: Request, res: Response) => {
     const user = await User.findById(req.user!.sub);
     if (!user) throw AppError.authRequired();
@@ -128,6 +147,7 @@ export const authController = {
    * vs "reset link sent" lets an attacker enumerate which emails have
    * accounts, which this deliberately avoids.
    */
+  // Post /api/auth/forgot-password
   forgotPassword: asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body as ForgotPasswordInput;
     const user = await User.findOne({ email });
@@ -145,6 +165,7 @@ export const authController = {
     ok(res, {}, "If that email has an account, a reset link has been sent.");
   }),
 
+  // POST /api/auth/reset-password
   resetPassword: asyncHandler(async (req: Request, res: Response) => {
     const { token, password } = req.body as ResetPasswordInput;
     const tokenHash = hashToken(token);
