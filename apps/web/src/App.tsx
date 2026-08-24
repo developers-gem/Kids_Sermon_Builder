@@ -28,11 +28,11 @@ export function App() {
           <Route path="/my-lessons" element={<MyLessonsPage />} />
           <Route path="/lesson/:id" element={<LessonDetailPage />} />
         </Route>
-        {/* <Route element={<AdminRoute />}> */}
+        <Route element={<AdminRoute />}>
           <Route path="/admin/stories" element={<AdminStoriesPage />} />
           <Route path="/admin/stories/new" element={<AdminStoryEditorPage />} />
           <Route path="/admin/stories/:id/edit" element={<AdminStoryEditorPage />} />
-        {/* </Route> */}
+        </Route>
         <Route path="*" element={<NotFoundPage />}/>
       </Route>
     </Routes>
