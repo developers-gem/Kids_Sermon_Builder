@@ -15,6 +15,8 @@ import { AdminStoriesPage } from "./pages/AdminStoriesPage";
 import { AdminStoryEditorPage } from "./pages/AdminStoryEditorPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import PrivacyPolicy from "./privacyPolicyAndTerms$Conditions/PrivacyPolicy";
+import { TermsAndConditions } from "./privacyPolicyAndTerms$Conditions/TermsAndConditions";
 export function App() {
   return (
     <Routes>
@@ -27,6 +29,9 @@ export function App() {
         <Route path="/shared/:token" element={<SharedLessonPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/privacy-policy" element={< PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={< TermsAndConditions />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/my-lessons" element={<MyLessonsPage />} />
           <Route path="/lesson/:id" element={<LessonDetailPage />} />
