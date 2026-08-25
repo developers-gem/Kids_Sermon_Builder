@@ -18,6 +18,10 @@
     "lint": "npm run lint --workspace apps/web && npm run lint --workspace server"
   },
   "dependencies": {
+    "nodemailer": "^9.0.5",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.1"
   }
 }
