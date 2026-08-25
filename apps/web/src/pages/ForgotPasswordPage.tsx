@@ -4,7 +4,7 @@ import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { api } from "@/api/client";
 import { friendlyErrorMessage } from "@/lib/errorMessages";
 
-export function ResetPasswordPage() {
+export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

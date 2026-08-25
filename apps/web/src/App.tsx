@@ -13,7 +13,8 @@ import { LessonDetailPage } from "./pages/LessonDetailPage";
 import { SharedLessonPage } from "./pages/SharedLessonPage";
 import { AdminStoriesPage } from "./pages/AdminStoriesPage";
 import { AdminStoryEditorPage } from "./pages/AdminStoryEditorPage";
-import { ResetPasswordPage } from "./pages/ResetPassword";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 export function App() {
   return (
     <Routes>
@@ -24,6 +25,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/shared/:token" element={<SharedLessonPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/my-lessons" element={<MyLessonsPage />} />

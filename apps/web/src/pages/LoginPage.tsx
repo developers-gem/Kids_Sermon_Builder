@@ -59,7 +59,7 @@ export function LoginPage() {
             autoComplete="current-password"
             className="mt-2 w-full rounded-xl border-2 border-border bg-card px-4 py-3 outline-none focus:border-primary"
           />
-          <div className="mt-2 text-right"> <Link to="/reset-password" className="text-sm font-bold text-accent underline hover:opacity-80" > Forgot Password? </Link> </div>
+          <div className="mt-2 text-right"> <Link to="/forgot-password" className="text-sm font-bold text-accent underline hover:opacity-80" > Forgot Password? </Link> </div>
         </label>
 
         {error && (
