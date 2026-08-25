@@ -30,25 +30,41 @@ export function LessonAudioPlaylist({
   const [error, setError] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const { settings } = useNarrationSettings();
 
+  /**
+   * Component mounted.
+   *
+   * This is intentionally very obvious so we can confirm
+   * that the deployed frontend is actually using this file.
+   */
   useEffect(() => {
-    console.log("🔥 NEW LESSON AUDIO PLAYLIST FILE LOADED");
+    console.log(
+      "🔥🔥🔥 LESSON AUDIO PLAYLIST COMPONENT LOADED 🔥🔥🔥"
+    );
+
+    console.log("Lesson ID:", lessonId);
+    console.log("Number of tracks:", tracks.length);
 
     return () => {
+      console.log("🧹 Destroying LessonAudioPlaylist");
+
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.src = "";
+        audioRef.current.removeAttribute("src");
+        audioRef.current.load();
       }
+
       audioRef.current = null;
     };
-  }, []);
+  }, [lessonId, tracks.length]);
 
   /**
-   * Completely stop the current audio.
+   * Stop current audio.
    */
   const stop = () => {
-    console.log("Stopping audio");
+    console.log("⏹️ STOP AUDIO");
 
     const audio = audioRef.current;
 
@@ -63,260 +79,418 @@ export function LessonAudioPlaylist({
     setIndex(null);
     setPlaying(false);
     setLoading(false);
+    setError(null);
   };
 
   /**
-   * Create an audio element and wait until the browser has
-   * loaded enough information before trying to play it.
+   * Attach all audio events.
    */
-  const createAudio = async (url: string, trackIndex: number) => {
-    console.log("Creating audio element");
-    console.log("Audio URL:", url);
-
-    const audio = new Audio();
-
-    audio.preload = "auto";
-    audio.src = url;
-
-    audioRef.current = audio;
-
+  const attachAudioEvents = (
+    audio: HTMLAudioElement,
+    trackIndex: number
+  ) => {
     audio.onplay = () => {
-      console.log("🎵 AUDIO PLAYING");
+      console.log("🎵 AUDIO PLAY EVENT");
+
       setPlaying(true);
     };
 
     audio.onpause = () => {
-      console.log("⏸️ AUDIO PAUSED");
+      console.log("⏸️ AUDIO PAUSE EVENT");
+
       setPlaying(false);
     };
 
     audio.onended = () => {
       console.log("🏁 AUDIO ENDED");
 
-      if (trackIndex + 1 < tracks.length) {
-        void loadAndPlay(trackIndex + 1);
+      if (trackIndex < tracks.length - 1) {
+        console.log(
+          "➡️ Moving to next track:",
+          trackIndex + 1
+        );
+
+        void generateAndPlay(trackIndex + 1);
       } else {
+        console.log("✅ ALL TRACKS FINISHED");
+
         setPlaying(false);
         setIndex(trackIndex);
       }
     };
 
     audio.onerror = () => {
-      console.error("❌ AUDIO ELEMENT ERROR", {
-        error: audio.error,
+      console.error("❌ HTML AUDIO ERROR");
+
+      console.error({
         src: audio.src,
-        networkState: audio.networkState,
+        error: audio.error,
+        errorCode: audio.error?.code,
+        errorMessage: audio.error?.message,
         readyState: audio.readyState,
+        networkState: audio.networkState,
       });
 
       setPlaying(false);
       setLoading(false);
+
       setError(
-        "The audio file could not be loaded. Please try again."
+        "The generated audio file could not be loaded. Please try again."
       );
     };
 
+    audio.onloadedmetadata = () => {
+      console.log("✅ AUDIO METADATA LOADED");
+
+      console.log({
+        duration: audio.duration,
+        readyState: audio.readyState,
+        networkState: audio.networkState,
+      });
+    };
+
+    audio.oncanplay = () => {
+      console.log("✅ AUDIO CAN PLAY");
+    };
+
+    audio.oncanplaythrough = () => {
+      console.log("✅ AUDIO CAN PLAY THROUGH");
+    };
+
+    audio.onwaiting = () => {
+      console.log("⏳ AUDIO WAITING");
+    };
+
+    audio.onstalled = () => {
+      console.warn("⚠️ AUDIO STALLED");
+    };
+
+    audio.onabort = () => {
+      console.warn("⚠️ AUDIO ABORTED");
+    };
+  };
+
+  /**
+   * Create an HTML audio element from the generated URL.
+   */
+  const createAudioElement = (
+    url: string,
+    trackIndex: number
+  ): HTMLAudioElement => {
+    console.log("🎧 Creating HTMLAudioElement");
+
+    console.log("Audio URL:", url);
+
+    const audio = new Audio();
+
+    audio.preload = "auto";
+
     /**
-     * Wait until the browser knows about the audio file.
+     * Set CORS explicitly.
+     *
+     * This is useful when the generated media is served
+     * from a different domain.
+     */
+    audio.crossOrigin = "anonymous";
+
+    audio.src = url;
+
+    attachAudioEvents(audio, trackIndex);
+
+    audioRef.current = audio;
+
+    return audio;
+  };
+
+  /**
+   * Generate the audio through the backend.
+   *
+   * NOTE:
+   * This function does NOT immediately call audio.play().
+   */
+  const generateAudio = async (
+    trackIndex: number
+  ): Promise<HTMLAudioElement> => {
+    const track = tracks[trackIndex];
+
+    if (!track) {
+      throw new Error("Invalid narration track.");
+    }
+
+    console.log("======================================");
+    console.log("🎙️ STARTING TTS GENERATION");
+    console.log("======================================");
+
+    console.log("Lesson ID:", lessonId);
+    console.log("Module ID:", track.moduleId);
+    console.log("Label:", track.label);
+    console.log("Voice:", settings.voice);
+    console.log("Style:", settings.style);
+    console.log("Text length:", track.text.length);
+
+    const result = await audioApi.generate(
+      lessonId,
+      track.moduleId,
+      {
+        text: track.text,
+        voice: settings.voice,
+        style: settings.style,
+      }
+    );
+
+    console.log("✅ TTS API RESPONSE:");
+    console.log(result);
+
+    const url = result.url;
+
+    console.log("🎧 GENERATED AUDIO URL:");
+    console.log(url);
+
+    if (!url) {
+      throw new Error(
+        "The TTS API returned an empty audio URL."
+      );
+    }
+
+    /**
+     * Stop previous audio.
+     */
+    if (audioRef.current) {
+      console.log("🧹 Removing previous audio");
+
+      audioRef.current.pause();
+      audioRef.current.removeAttribute("src");
+      audioRef.current.load();
+
+      audioRef.current = null;
+    }
+
+    const audio = createAudioElement(
+      url,
+      trackIndex
+    );
+
+    /**
+     * Start loading the audio file.
+     */
+    console.log("📥 Loading audio file");
+
+    audio.load();
+
+    /**
+     * Wait until the browser can play the audio.
      */
     await new Promise<void>((resolve, reject) => {
-      const onLoadedMetadata = () => {
-        cleanup();
-
-        console.log("✅ AUDIO METADATA LOADED", {
-          duration: audio.duration,
-          readyState: audio.readyState,
-        });
-
-        resolve();
-      };
-
-      const onCanPlay = () => {
-        cleanup();
-
-        console.log("✅ AUDIO CAN PLAY");
-
-        resolve();
-      };
-
-      const onError = () => {
-        cleanup();
-
-        reject(
-          new Error("The browser could not load the generated audio.")
-        );
-      };
+      let finished = false;
 
       const cleanup = () => {
         audio.removeEventListener(
-          "loadedmetadata",
-          onLoadedMetadata
+          "canplay",
+          handleCanPlay
         );
-        audio.removeEventListener("canplay", onCanPlay);
-        audio.removeEventListener("error", onError);
+
+        audio.removeEventListener(
+          "loadedmetadata",
+          handleMetadata
+        );
+
+        audio.removeEventListener(
+          "error",
+          handleError
+        );
+      };
+
+      const handleCanPlay = () => {
+        if (finished) return;
+
+        finished = true;
+
+        cleanup();
+
+        console.log(
+          "✅ Browser reports that audio can play"
+        );
+
+        resolve();
+      };
+
+      const handleMetadata = () => {
+        console.log(
+          "ℹ️ Audio metadata received",
+          {
+            duration: audio.duration,
+            readyState: audio.readyState,
+          }
+        );
+
+        /**
+         * Sometimes metadata is enough for the browser
+         * to allow playback.
+         */
+        if (audio.readyState >= 3) {
+          handleCanPlay();
+        }
+      };
+
+      const handleError = () => {
+        if (finished) return;
+
+        finished = true;
+
+        cleanup();
+
+        console.error(
+          "❌ Browser failed to load audio"
+        );
+
+        reject(
+          new Error(
+            "The browser could not load the generated audio file."
+          )
+        );
       };
 
       audio.addEventListener(
-        "loadedmetadata",
-        onLoadedMetadata,
-        { once: true }
+        "canplay",
+        handleCanPlay
       );
 
       audio.addEventListener(
-        "canplay",
-        onCanPlay,
-        { once: true }
+        "loadedmetadata",
+        handleMetadata
       );
 
       audio.addEventListener(
         "error",
-        onError,
-        { once: true }
+        handleError
       );
-
-      audio.load();
     });
 
     return audio;
   };
 
   /**
-   * Generate/load a narration and play it.
+   * Generate audio and then attempt playback.
    */
-  const loadAndPlay = async (i: number) => {
-    console.log("=================================");
-    console.log("loadAndPlay called:", i);
-    console.log("=================================");
-
-    if (i < 0 || i >= tracks.length) {
+  const generateAndPlay = async (
+    trackIndex: number
+  ) => {
+    if (
+      trackIndex < 0 ||
+      trackIndex >= tracks.length
+    ) {
       stop();
       return;
     }
 
     setError(null);
-    setIndex(i);
+    setIndex(trackIndex);
     setLoading(true);
 
     try {
-      const track = tracks[i]!;
-
-      console.log("🎙️ Generating narration");
-      console.log("Lesson ID:", lessonId);
-      console.log("Module ID:", track.moduleId);
-      console.log("Voice:", settings.voice);
-      console.log("Style:", settings.style);
-      console.log("Text length:", track.text.length);
-
-      /**
-       * Generate/retrieve audio from backend.
-       */
-      const result = await audioApi.generate(
-        lessonId,
-        track.moduleId,
-        {
-          text: track.text,
-          voice: settings.voice,
-          style: settings.style,
-        }
+      const audio = await generateAudio(
+        trackIndex
       );
 
-      console.log("✅ TTS API RESULT:", result);
-
-      const { url } = result;
-
-      console.log("🎧 TTS AUDIO URL:", url);
-
-      if (!url) {
-        throw new Error("TTS API returned an empty audio URL.");
-      }
-
-      /**
-       * Stop old audio.
-       */
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-        audioRef.current.load();
-      }
-
-      /**
-       * Create the new audio object.
-       */
-      const audio = await createAudio(url, i);
-
-      /**
-       * IMPORTANT:
-       *
-       * The browser may reject programmatic playback if the
-       * original click is no longer considered an active user
-       * gesture after the async API request.
-       */
-      console.log("▶️ Attempting audio.play()");
+      console.log(
+        "▶️ Attempting automatic playback"
+      );
 
       try {
         await audio.play();
 
-        console.log("✅ audio.play() succeeded");
+        console.log(
+          "✅ AUTOMATIC PLAYBACK SUCCEEDED"
+        );
 
         setPlaying(true);
       } catch (playError) {
-        console.error("❌ audio.play() FAILED", playError);
+        console.error(
+          "❌ AUTOMATIC PLAYBACK FAILED"
+        );
+
+        console.error(playError);
 
         if (
-          playError instanceof DOMException &&
-          playError.name === "NotAllowedError"
+          playError instanceof DOMException
         ) {
-          setError(
-            "Browser blocked automatic playback. Tap Play again to start the audio."
+          console.error(
+            "Playback error name:",
+            playError.name
           );
-        } else if (
-          playError instanceof DOMException &&
-          playError.name === "NotSupportedError"
-        ) {
-          setError(
-            "This browser cannot play the generated audio format."
-          );
-        } else {
-          setError(
-            "The audio could not start. Please tap Play again."
+
+          console.error(
+            "Playback error message:",
+            playError.message
           );
         }
 
+        /**
+         * IMPORTANT:
+         *
+         * The audio file itself may be perfectly valid.
+         * The browser may simply require another direct
+         * user interaction.
+         */
         setPlaying(false);
+
+        setError(
+          "Audio is ready. Tap Play again to start playback."
+        );
       }
     } catch (err) {
-      console.error("❌ AUDIO PLAYLIST ERROR:", err);
+      console.error(
+        "❌ TTS / AUDIO GENERATION ERROR"
+      );
+
+      console.error(err);
+
+      setPlaying(false);
 
       setError(
         friendlyErrorMessage(
           err,
-          "Couldn't generate or play this section."
+          "Couldn't generate the narration."
         )
       );
-
-      setPlaying(false);
     } finally {
       setLoading(false);
     }
   };
 
   /**
-   * Play / pause button.
+   * Play/Pause button.
+   *
+   * When an audio element already exists, this function
+   * directly calls audio.play() from the button click.
+   *
+   * That is important for browser autoplay policies.
    */
   const onPlayPause = async () => {
-    console.log("🖱️ PLAY BUTTON CLICKED");
+    console.log("======================================");
+    console.log("🖱️ PLAY / PAUSE BUTTON CLICKED");
+    console.log("======================================");
 
     setError(null);
 
     /**
-     * No audio exists yet.
+     * No audio exists.
      *
-     * This is the first click.
+     * Generate first track.
      */
-    if (index === null || !audioRef.current) {
-      console.log("Starting first track");
+    if (
+      index === null ||
+      !audioRef.current
+    ) {
+      console.log(
+        "🎙️ No audio exists yet."
+      );
 
-      await loadAndPlay(0);
+      console.log(
+        "Starting first track."
+      );
+
+      await generateAndPlay(0);
 
       return;
     }
@@ -324,10 +498,12 @@ export function LessonAudioPlaylist({
     const audio = audioRef.current;
 
     /**
-     * Currently playing -> pause.
+     * Audio currently playing.
      */
     if (!audio.paused) {
-      console.log("Pausing audio");
+      console.log(
+        "⏸️ Pausing current audio"
+      );
 
       audio.pause();
 
@@ -335,22 +511,33 @@ export function LessonAudioPlaylist({
     }
 
     /**
-     * Audio exists but is paused.
+     * Audio exists and is paused.
      *
-     * IMPORTANT:
-     * This play() happens directly inside the button click,
-     * so browser autoplay restrictions should not block it.
+     * This play() is directly triggered by
+     * the user's button click.
      */
-    console.log("Resuming audio directly from button click");
+    console.log(
+      "▶️ User clicked Play/Resume"
+    );
+
+    console.log(
+      "Attempting direct audio.play()"
+    );
 
     try {
       await audio.play();
 
-      console.log("✅ Resume successful");
+      console.log(
+        "✅ DIRECT USER PLAYBACK SUCCEEDED"
+      );
 
       setPlaying(true);
     } catch (err) {
-      console.error("❌ Resume failed:", err);
+      console.error(
+        "❌ DIRECT USER PLAYBACK FAILED"
+      );
+
+      console.error(err);
 
       setPlaying(false);
 
@@ -360,6 +547,13 @@ export function LessonAudioPlaylist({
       ) {
         setError(
           "Playback was blocked by the browser. Tap Play again."
+        );
+      } else if (
+        err instanceof DOMException &&
+        err.name === "NotSupportedError"
+      ) {
+        setError(
+          "This browser cannot play this audio file."
         );
       } else {
         setError(
@@ -373,13 +567,19 @@ export function LessonAudioPlaylist({
    * Previous track.
    */
   const onPrevious = () => {
-    if (index === null || index === 0 || loading) {
+    if (
+      index === null ||
+      index === 0 ||
+      loading
+    ) {
       return;
     }
 
-    console.log("Previous track");
+    console.log(
+      "⏮️ Previous track"
+    );
 
-    void loadAndPlay(index - 1);
+    void generateAndPlay(index - 1);
   };
 
   /**
@@ -394,13 +594,17 @@ export function LessonAudioPlaylist({
       return;
     }
 
-    console.log("Next track");
+    console.log(
+      "⏭️ Next track"
+    );
 
-    void loadAndPlay(index + 1);
+    void generateAndPlay(index + 1);
   };
 
   const current =
-    index !== null ? tracks[index] : null;
+    index !== null
+      ? tracks[index]
+      : null;
 
   return (
     <section className="no-print rounded-2xl border-2 border-border bg-card p-5">
@@ -410,8 +614,9 @@ export function LessonAudioPlaylist({
 
       <p className="mt-1 text-sm text-muted-foreground">
         Plays through {tracks.length} section
-        {tracks.length === 1 ? "" : "s"} back to back — story,
-        memory verse, games, object lesson, and closing prayer.
+        {tracks.length === 1 ? "" : "s"} back to back —
+        story, memory verse, games, object lesson,
+        and closing prayer.
       </p>
 
       <div className="mt-4 flex items-center gap-2">
@@ -490,7 +695,8 @@ export function LessonAudioPlaylist({
             {index !== null
               ? index + 1
               : 0}{" "}
-            / {tracks.length} · {current.label}
+            / {tracks.length} ·{" "}
+            {current.label}
           </span>
         )}
       </div>
