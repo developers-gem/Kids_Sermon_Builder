@@ -159,6 +159,9 @@ import { useNarrationSettings } from "@/lib/narration";
 import { audioApi } from "@/api/endpoints";
 import { friendlyErrorMessage } from "@/lib/errorMessages";
 
+console.log("🔥 NEW LESSON AUDIO PLAYLIST FILE LOADED");
+
+
 export interface PlaylistTrack {
   moduleId: string;
   label: string;
