@@ -16,7 +16,7 @@ import { AdminStoryEditorPage } from "./pages/AdminStoryEditorPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import PrivacyPolicy from "./privacyPolicyAndTerms$Conditions/PrivacyPolicy";
-import { TermsAndConditions } from "./privacyPolicyAndTerms$Conditions/TermsAndConditions";
+import TermsAndConditions from "./privacyPolicyAndTerms$Conditions/TermsAndConditions";
 export function App() {
   return (
     <Routes>

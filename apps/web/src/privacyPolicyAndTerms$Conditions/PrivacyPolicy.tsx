@@ -1,297 +1,211 @@
 import { Link } from "react-router-dom";
 
-function PrivacyPolicy() {
+ function PrivacyPolicy() {
   return (
     <main className="mx-auto max-w-4xl px-4 pb-20 pt-10 sm:px-6">
-      <div className="paper-card p-6 sm:p-10">
-        <header className="border-b-2 border-border pb-6">
-          <p className="font-display text-sm font-bold uppercase tracking-[0.18em] text-accent">
-            Kid's Sermon Builder
-          </p>
+      <article className="paper-card p-6 sm:p-10">
+        <h1 className="text-4xl font-extrabold" style={{ color: "#ef852e" }}>
+          Privacy Policy
+        </h1>
 
-          <h1 className="mt-2 text-4xl font-extrabold">
-            Privacy Policy
-          </h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Last updated: August 25, 2026
+        </p>
 
-          <p className="mt-3 text-sm text-muted-foreground">
-            Last updated: August 25, 2026
-          </p>
-        </header>
+        <p className="mt-6 leading-7">
+          Welcome to Kid&apos;s Sermon Builder. We respect your privacy and
+          are committed to protecting the information you provide when using
+          our application and website.
+        </p>
 
-        <div className="mt-8 space-y-8 leading-7 text-muted-foreground">
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              1. Introduction
-            </h2>
+        <p className="mt-4 leading-7">
+          This Privacy Policy explains what information we collect, how we use
+          it, how we protect it, and the choices available to you.
+        </p>
 
-            <p className="mt-3">
-              Welcome to Kid's Sermon Builder. This Privacy Policy explains
-              how we collect, use, store, and protect information when you use
-              the Kid's Sermon Builder website, application, and related
-              services.
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          1. Information We Collect
+        </h2>
 
-            <p className="mt-3">
-              Kid's Sermon Builder is designed to help children's pastors,
-              Sunday school teachers, ministry leaders, parents, and others
-              create engaging Bible lessons and teaching materials.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          When you create and use a Kid&apos;s Sermon Builder account, we may
+          collect information such as:
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              2. Information We May Collect
-            </h2>
+        <ul className="mt-3 list-disc space-y-2 pl-6 leading-7">
+          <li>Your name.</li>
+          <li>Your email address.</li>
+          <li>Your account login information.</li>
+          <li>Lessons, stories, sermon outlines, and other content you create.</li>
+          <li>Preferences and settings you choose within the application.</li>
+          <li>Technical information required to operate and secure the service.</li>
+        </ul>
 
-            <p className="mt-3">
-              Depending on how you use the service, we may collect information
-              such as:
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          2. How We Use Your Information
+        </h2>
 
-            <ul className="mt-3 list-disc space-y-2 pl-6">
-              <li>Name and email address.</li>
-              <li>Account login and authentication information.</li>
-              <li>Lessons, sermon content, Bible passages, and other content you create.</li>
-              <li>Preferences related to lesson generation and narration.</li>
-              <li>Subscription and account status information.</li>
-              <li>Technical information required to operate and secure the service.</li>
-              <li>Information you voluntarily provide when contacting support.</li>
-            </ul>
-          </section>
+        <p className="mt-4 leading-7">
+          We use collected information to provide, maintain, and improve
+          Kid&apos;s Sermon Builder.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              3. Information About Children
-            </h2>
+        <ul className="mt-3 list-disc space-y-2 pl-6 leading-7">
+          <li>Create and manage your account.</li>
+          <li>Provide access to lessons and application features.</li>
+          <li>Save and retrieve lessons you create.</li>
+          <li>Generate lesson content and related materials.</li>
+          <li>Provide password reset and account-related emails.</li>
+          <li>Process subscriptions and premium features.</li>
+          <li>Maintain application security and prevent abuse.</li>
+          <li>Improve the performance and reliability of the service.</li>
+        </ul>
 
-            <p className="mt-3">
-              Kid's Sermon Builder is intended for adults, including
-              children's pastors, teachers, ministry leaders, and parents. It
-              is not intended to collect personal information directly from
-              children.
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          3. Children's Privacy
+        </h2>
 
-            <p className="mt-3">
-              Users should not enter children's names, addresses, phone
-              numbers, photographs, school information, or other personally
-              identifiable information into the service unless they have the
-              appropriate legal authority and consent to do so.
-            </p>
+        <p className="mt-4 leading-7">
+          Kid&apos;s Sermon Builder is designed for adults such as
+          children&apos;s pastors, ministry leaders, Sunday school teachers,
+          and parents. The service is not intended to collect personal
+          information directly from children.
+        </p>
 
-            <p className="mt-3">
-              Lesson content should be created without unnecessary personal
-              information about individual children.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          Users should not enter children&apos;s sensitive personal information
+          into lesson content, story prompts, or other areas of the service.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              4. How We Use Information
-            </h2>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          4. AI-Generated Content
+        </h2>
 
-            <p className="mt-3">
-              Information may be used to:
-            </p>
+        <p className="mt-4 leading-7">
+          Kid&apos;s Sermon Builder may use artificial intelligence services to
+          help generate lesson summaries, stories, activities, object lessons,
+          illustrations, narration, or other educational content.
+        </p>
 
-            <ul className="mt-3 list-disc space-y-2 pl-6">
-              <li>Create and manage your account.</li>
-              <li>Provide lesson-building and lesson-generation features.</li>
-              <li>Save and retrieve lessons and related content.</li>
-              <li>Provide narration and other requested features.</li>
-              <li>Process and manage subscriptions.</li>
-              <li>Send account-related emails, including password reset emails.</li>
-              <li>Maintain and improve the service.</li>
-              <li>Detect fraud, abuse, security issues, and unauthorized access.</li>
-              <li>Respond to support requests.</li>
-            </ul>
-          </section>
+        <p className="mt-4 leading-7">
+          AI-generated content should be reviewed by an adult before it is used
+          for teaching. Users are responsible for checking generated content
+          for accuracy, appropriateness, and Scripture accuracy.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              5. AI-Generated Content
-            </h2>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          5. Cookies and Similar Technologies
+        </h2>
 
-            <p className="mt-3">
-              Kid's Sermon Builder may use artificial intelligence to assist
-              with lesson creation, Bible story summaries, teaching ideas,
-              games, object lessons, illustrations, and other educational
-              material.
-            </p>
+        <p className="mt-4 leading-7">
+          We may use cookies, local storage, or similar technologies to keep
+          you signed in, remember preferences, maintain sessions, and provide
+          essential application functionality.
+        </p>
 
-            <p className="mt-3">
-              Information submitted to AI-powered features may be processed by
-              third-party technology providers where necessary to provide the
-              requested functionality.
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          6. Data Security
+        </h2>
 
-            <p className="mt-3">
-              AI-generated material may contain errors or inaccuracies.
-              Users are responsible for reviewing generated content,
-              particularly Scripture references and teaching material, before
-              using it with children.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          We take reasonable technical and organizational measures to protect
+          your information against unauthorized access, alteration, disclosure,
+          or destruction.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              6. Cookies and Similar Technologies
-            </h2>
+        <p className="mt-4 leading-7">
+          However, no method of transmission or electronic storage can be
+          guaranteed to be completely secure.
+        </p>
 
-            <p className="mt-3">
-              We may use cookies, local storage, session technologies, and
-              similar technologies to keep users signed in, maintain security,
-              remember preferences, and operate the service.
-            </p>
-          </section>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          7. Third-Party Services
+        </h2>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              7. Account Security
-            </h2>
+        <p className="mt-4 leading-7">
+          We may use third-party service providers to operate parts of the
+          application, including hosting, database services, email delivery,
+          artificial intelligence services, analytics, storage, and payment
+          processing.
+        </p>
 
-            <p className="mt-3">
-              We take reasonable technical and organizational measures to
-              protect account information and stored content. However, no
-              internet-based service can guarantee absolute security.
-            </p>
+        <p className="mt-4 leading-7">
+          These providers may process information only as necessary to provide
+          their services to us and according to their applicable policies.
+        </p>
 
-            <p className="mt-3">
-              You are responsible for keeping your password and account
-              credentials confidential and should notify us if you believe your
-              account has been accessed without authorization.
-            </p>
-          </section>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          8. Subscriptions and Payments
+        </h2>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              8. Password Reset
-            </h2>
+        <p className="mt-4 leading-7">
+          Kid&apos;s Sermon Builder may offer auto-renewing subscriptions and
+          premium features. Payments made through the Apple App Store are
+          processed by Apple and are subject to Apple&apos;s applicable terms
+          and privacy policies.
+        </p>
 
-            <p className="mt-3">
-              If you request a password reset, we may send a password-reset
-              email to the email address associated with your account. Reset
-              links are temporary and should not be shared with others.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          We do not need to store your complete payment card information to
+          provide App Store subscriptions.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              9. Subscriptions and Payments
-            </h2>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          9. Data Retention
+        </h2>
 
-            <p className="mt-3">
-              Kid's Sermon Builder offers optional auto-renewing subscriptions
-              that provide access to premium features and expanded lesson
-              libraries.
-            </p>
+        <p className="mt-4 leading-7">
+          We retain account and lesson information for as long as reasonably
+          necessary to provide the service, maintain your account, comply with
+          legal obligations, resolve disputes, and enforce our agreements.
+        </p>
 
-            <p className="mt-3">
-              For purchases made through Apple's App Store, payment is
-              processed by Apple. We do not receive or store your complete
-              payment card information.
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          10. Your Choices
+        </h2>
 
-            <p className="mt-3">
-              Subscription management and cancellation are handled through
-              your App Store account settings.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          Depending on the features available in the application, you may be
+          able to access, update, or delete information associated with your
+          account.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              10. Third-Party Services
-            </h2>
+        <p className="mt-4 leading-7">
+          You may also contact us if you have questions about your personal
+          information or would like to request assistance with your data.
+        </p>
 
-            <p className="mt-3">
-              We may use third-party providers to operate parts of the service,
-              such as hosting, databases, email delivery, AI services,
-              analytics, storage, authentication, and payment processing.
-            </p>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          11. Changes to This Privacy Policy
+        </h2>
 
-            <p className="mt-3">
-              These providers may process information only as necessary to
-              provide their services and according to their applicable terms
-              and privacy policies.
-            </p>
-          </section>
+        <p className="mt-4 leading-7">
+          We may update this Privacy Policy from time to time. When changes are
+          made, we will update the date shown at the top of this policy.
+        </p>
 
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              11. Data Retention
-            </h2>
+        <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
+          12. Contact Us
+        </h2>
 
-            <p className="mt-3">
-              We retain information for as long as reasonably necessary to
-              provide the service, maintain your account, comply with legal
-              obligations, resolve disputes, and enforce our agreements.
-            </p>
+        <p className="mt-4 leading-7">
+          If you have questions about this Privacy Policy or how your
+          information is handled, please contact the Kid&apos;s Sermon Builder
+          support team through the contact information provided by the service.
+        </p>
 
-            <p className="mt-3">
-              You may contact us regarding deletion of your account or
-              personal information, subject to applicable legal and operational
-              requirements.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              12. Your Rights
-            </h2>
-
-            <p className="mt-3">
-              Depending on where you live, you may have rights relating to your
-              personal information, including rights to access, correct,
-              delete, restrict, or object to certain processing.
-            </p>
-
-            <p className="mt-3">
-              Requests may be made using the contact information provided
-              below.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              13. Changes to This Privacy Policy
-            </h2>
-
-            <p className="mt-3">
-              We may update this Privacy Policy from time to time. When
-              material changes are made, we may update the date shown at the
-              beginning of this policy and provide additional notice where
-              appropriate.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-extrabold text-foreground">
-              14. Contact Us
-            </h2>
-
-            <p className="mt-3">
-              If you have questions about this Privacy Policy or your personal
-              information, please contact the Kid's Sermon Builder support
-              team.
-            </p>
-
-            <p className="mt-3 font-bold text-foreground">
-              Email: support@kids-sermon-builder.com
-            </p>
-          </section>
-        </div>
-
-        <div className="mt-10 border-t-2 border-border pt-6">
+        <div className="mt-10 border-t pt-6">
           <Link
             to="/"
-            className="font-bold text-accent underline"
+            className="font-bold underline"
+            style={{ color: "#ef852e" }}
           >
-            Back to Kid's Sermon Builder
+            Back to Kid&apos;s Sermon Builder
           </Link>
         </div>
-      </div>
+      </article>
     </main>
   );
 }
-
 
 export default PrivacyPolicy;
