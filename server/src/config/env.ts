@@ -86,8 +86,6 @@ const EnvSchema = z.object({
   // =========================
   // AI LESSON GENERATION
   // =========================
-  // Keep this if your existing lesson generation
-  // still uses Lovable AI.
   LOVABLE_API_KEY: z.string().optional(),
 
   AI_GATEWAY_URL: z
@@ -100,7 +98,6 @@ const EnvSchema = z.object({
   // =========================
   // OPENAI TEXT-TO-SPEECH
   // =========================
-  // Used for story narration and audio generation.
   OPENAI_API_KEY: z
     .string()
     .min(1, "OPENAI_API_KEY is required"),
@@ -119,15 +116,32 @@ const EnvSchema = z.object({
   // =========================
   // AWS S3 STORAGE
   // =========================
-  STORAGE_S3_BUCKET: z.string().optional(),
+  STORAGE_S3_BUCKET: z
+    .string()
+    .optional(),
 
-  STORAGE_S3_REGION: z.string().optional(),
+  STORAGE_S3_REGION: z
+    .string()
+    .optional(),
 
-  STORAGE_S3_ACCESS_KEY_ID: z.string().optional(),
+  STORAGE_S3_ACCESS_KEY_ID: z
+    .string()
+    .optional(),
 
-  STORAGE_S3_SECRET_ACCESS_KEY: z.string().optional(),
+  STORAGE_S3_SECRET_ACCESS_KEY: z
+    .string()
+    .optional(),
 
-  STORAGE_S3_PUBLIC_URL: z.string().optional(),
+  /**
+   * Optional public base URL.
+   *
+   * Example:
+   * https://your-bucket.s3.us-east-1.amazonaws.com
+   */
+  STORAGE_S3_PUBLIC_URL: z
+    .string()
+    .url()
+    .optional(),
 });
 
 /**
@@ -155,12 +169,14 @@ if (baseParsed.data.STORAGE_DRIVER === "s3") {
     "STORAGE_S3_REGION",
     "STORAGE_S3_ACCESS_KEY_ID",
     "STORAGE_S3_SECRET_ACCESS_KEY",
-  ].filter(
-    (key) =>
-      !baseParsed.data[
+  ].filter((key) => {
+    const value =
+      baseParsed.data[
         key as keyof typeof baseParsed.data
-      ]
-  );
+      ];
+
+    return !value;
+  });
 
   if (missing.length > 0) {
     console.error("❌ Invalid environment configuration:");
