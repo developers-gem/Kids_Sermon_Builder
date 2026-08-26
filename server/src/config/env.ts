@@ -54,6 +54,14 @@ const EnvSchema = z.object({
     .default("http://localhost:5173"),
 
   // =========================
+  // BACKEND URL
+  // =========================
+  API_PUBLIC_URL: z
+    .string()
+    .url()
+    .default("http://localhost:4000"),
+
+  // =========================
   // EMAIL / SMTP
   // =========================
   SMTP_HOST: z
