@@ -61,7 +61,8 @@ export function BuilderPage() {
   });
   const stories = useMemo(() => data?.stories ?? [], [data]);
 
-  const [storyId, setStoryId] = useState<string | null>(null);
+  // const [storyId, setStoryId] = useState<string | null>(null);
+  const [storySlug, setStorySlug] = useState<string | null>(null);
   // Order matters here — unlike a plain toggle set, this array's order IS
   // the run-sheet order, which is what makes "move up/down" and "reset
   // recommended order" (Prompt 09) meaningful instead of cosmetic.
@@ -69,10 +70,11 @@ export function BuilderPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const story: Story | undefined = useMemo(() => {
-    if (stories.length === 0) return undefined;
-    return stories.find((s) => s.id === storyId) ?? stories[0];
-  }, [stories, storyId]);
+ const story: Story | undefined = useMemo(() => {
+  if (stories.length === 0) return undefined;
+
+  return stories.find((s) => s.slug === storySlug) ?? stories[0];
+}, [stories, storySlug]);
 
   const has = (b: Block) => active.includes(b);
   const toggle = (b: Block) =>
@@ -126,56 +128,75 @@ export function BuilderPage() {
         </p>
       )}
 
-      <section className="no-print mt-8">
-        <h2 className="font-display text-lg font-bold">1. Choose a Bible story</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {isLoading &&
-            Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="paper-card h-56 animate-pulse bg-secondary/50" />
-            ))}
-          {stories.map((s) => {
-            const selected = story?.id === s.id;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setStoryId(s.id)}
-                className={`paper-card overflow-hidden text-left transition-transform hover:-translate-y-1 ${
-                  selected ? "ring-4 ring-primary/50" : ""
-                }`}
-              >
-                <img
-                  src={STORY_IMAGES[s.slug] ?? s.image}
-                  alt={s.imageAlt}
-                  width={1024}
-                  height={768}
-                  loading="lazy"
-                  className="h-36 w-full bg-secondary object-cover"
-                />
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-display text-lg font-bold leading-snug">{s.title}</h3>
-                    {selected && (
-                      <span className="mt-1 rounded-full bg-primary p-1 text-primary-foreground">
-                        <Check className="h-3.5 w-3.5" />
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{s.reference}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent">
-                      {s.theme}
-                    </span>
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-bold text-secondary-foreground">
-                      {s.ageRange}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+    <section className="no-print mt-8">
+  <h2 className="font-display text-lg font-bold">
+    1. Choose a Bible story
+  </h2>
+
+  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {isLoading &&
+      Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="paper-card h-56 animate-pulse bg-secondary/50"
+        />
+      ))}
+
+    {stories.map((s) => {
+      const selected = story?.slug === s.slug;
+
+      return (
+        <button
+          key={s.slug}
+          type="button"
+          onClick={() => setStorySlug(s.slug)}
+          className={`paper-card overflow-hidden text-left transition-transform hover:-translate-y-1 ${
+            selected
+              ? "ring-4 ring-primary/50"
+              : ""
+          }`}
+        >
+          <img
+            src={STORY_IMAGES[s.slug] ?? s.image}
+            alt={s.imageAlt}
+            width={1024}
+            height={768}
+            loading="lazy"
+            className="h-36 w-full bg-secondary object-cover"
+          />
+
+          <div className="p-4">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-display text-lg font-bold leading-snug">
+                {s.title}
+              </h3>
+
+              {selected && (
+                <span className="mt-1 rounded-full bg-primary p-1 text-primary-foreground">
+                  <Check className="h-3.5 w-3.5" />
+                </span>
+              )}
+            </div>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+              {s.reference}
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent">
+                {s.theme}
+              </span>
+
+              <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-bold text-secondary-foreground">
+                {s.ageRange}
+              </span>
+            </div>
+          </div>
+        </button>
+      );
+    })}
+  </div>
+</section>
 
       {story && (
         <>
