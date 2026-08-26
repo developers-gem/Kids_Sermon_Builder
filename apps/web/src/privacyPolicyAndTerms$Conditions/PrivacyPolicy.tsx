@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
- function PrivacyPolicy() {
+function PrivacyPolicy() {
   return (
     <main className="mx-auto max-w-4xl px-4 pb-20 pt-10 sm:px-6">
       <article className="paper-card p-6 sm:p-10">
@@ -62,7 +62,7 @@ import { Link } from "react-router-dom";
         </ul>
 
         <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
-          3. Children's Privacy
+          3. Children&apos;s Privacy
         </h2>
 
         <p className="mt-4 leading-7">
@@ -151,29 +151,33 @@ import { Link } from "react-router-dom";
         </p>
 
         <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
-          9. Data Retention
+          9. Data Retention Policy
         </h2>
 
         <p className="mt-4 leading-7">
-          We retain account and lesson information for as long as reasonably
-          necessary to provide the service, maintain your account, comply with
-          legal obligations, resolve disputes, and enforce our agreements.
+          We retain your personal information, generated lessons, and outlines only for as long as necessary to fulfill the purposes outlined in this policy:
         </p>
+
+        <ul className="mt-3 list-disc space-y-2 pl-6 leading-7">
+          <li><strong>Active Accounts:</strong> User profile data, saved sermon plans, and preferences are retained for the active lifecycle of your account.</li>
+          <li><strong>Temporary &amp; Cache Data:</strong> Intermediate AI prompts and temporary session data are routinely purged within 30 to 90 days.</li>
+          <li><strong>Inactive Accounts:</strong> Accounts inactive for extended periods may be scheduled for archival or permanent removal after prior email notification.</li>
+          <li><strong>Legal &amp; Compliance Records:</strong> Transaction logs and legal audit trails are retained for the period mandated by tax and corporate compliance laws.</li>
+        </ul>
 
         <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
-          10. Your Choices
+          10. Data Deletion Policy &amp; User Rights
         </h2>
 
         <p className="mt-4 leading-7">
-          Depending on the features available in the application, you may be
-          able to access, update, or delete information associated with your
-          account.
+          You retain full ownership and control over your personal data and lesson material. In compliance with applicable privacy standards (including App Store account deletion requirements and global privacy regulations), you have the right to delete your data at any time:
         </p>
 
-        <p className="mt-4 leading-7">
-          You may also contact us if you have questions about your personal
-          information or would like to request assistance with your data.
-        </p>
+        <ul className="mt-3 list-disc space-y-2 pl-6 leading-7">
+          <li><strong>In-App Deletion:</strong> You can delete individual sermons, drafts, or your entire account directly through your account settings inside the app.</li>
+          <li><strong>Manual Deletion Requests:</strong> You may submit a written deletion request to our support team. We will process and confirm the permanent removal of your account and related records within 30 days.</li>
+          <li><strong>Scope of Deletion:</strong> Deleting your account permanently clears your authentication records, personal profile, and associated sermon databases. Non-identifiable technical logs may remain in encrypted off-site backups until standard backup rotation cycles overwrite them.</li>
+        </ul>
 
         <h2 className="mt-10 text-2xl font-extrabold" style={{ color: "#ef852e" }}>
           11. Changes to This Privacy Policy
@@ -189,9 +193,7 @@ import { Link } from "react-router-dom";
         </h2>
 
         <p className="mt-4 leading-7">
-          If you have questions about this Privacy Policy or how your
-          information is handled, please contact the Kid&apos;s Sermon Builder
-          support team through the contact information provided by the service.
+          If you have questions about this Privacy Policy, wish to request account deletion, or need assistance regarding your data, please contact the Kid&apos;s Sermon Builder support team through the application settings or designated support channels.
         </p>
 
         <div className="mt-10 border-t pt-6">
