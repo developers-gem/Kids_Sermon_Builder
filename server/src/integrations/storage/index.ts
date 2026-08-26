@@ -86,7 +86,6 @@
 //   return env.STORAGE_DRIVER === "s3" ? saveS3(buffer, subdir, filename) : saveLocal(buffer, subdir, filename);
 // }
 
-
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -155,7 +154,12 @@ async function saveLocal(
 
   await writeFile(filePath, buffer);
 
-  const publicBaseUrl = env.API_PUBLIC_URL.replace(/\/$/, "");
+  // Safely retrieve API_PUBLIC_URL from env or process.env to satisfy TypeScript
+  const rawBaseUrl =
+    (env as Record<string, any>).API_PUBLIC_URL ||
+    process.env.API_PUBLIC_URL ||
+    "";
+  const publicBaseUrl = rawBaseUrl.replace(/\/$/, "");
 
   const mediaPath = `${subdir}/${filename}`
     .split("/")
