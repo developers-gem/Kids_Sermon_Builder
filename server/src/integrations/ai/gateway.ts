@@ -2,33 +2,29 @@ import { env } from "../../config/env.js";
 import { AppError } from "../../utils/AppError.js";
 import { logger } from "../../config/logger.js";
 
-/**
- * Thin wrapper around the same AI gateway the prototype used
- * (ai.gateway.lovable.dev). Kept isolated in integrations/ai so the rest of
- * the backend never talks to a specific AI vendor directly — swapping
- * providers later only touches this file.
- */
-
 function apiKey(): string {
-  if (!env.LOVABLE_API_KEY) {
-    throw AppError.aiGenerationFailed("AI is not configured yet. Missing LOVABLE_API_KEY.");
+  if (!env.OPENAI_API_KEY) {
+    throw AppError.aiGenerationFailed("AI is not configured yet. Missing OPENAI_API_KEY.");
   }
-  return env.LOVABLE_API_KEY;
+  return env.OPENAI_API_KEY;
 }
 
-type GatewayResponse = {
+type ChatResponse = {
   choices: {
-    message: { content?: string | null; images?: { image_url: { url: string } }[] };
+    message: { content: string };
   }[];
 };
 
-async function callGateway(body: Record<string, unknown>): Promise<GatewayResponse> {
-  const res = await fetch(env.AI_GATEWAY_URL, {
+type ImageResponse = {
+  data: { url: string }[];
+};
+
+async function callOpenAIChat(body: Record<string, unknown>): Promise<ChatResponse> {
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Lovable-API-Key": apiKey(),
-      "X-Lovable-AIG-SDK": "fetch",
+      "Authorization": `Bearer ${apiKey()}`,
     },
     body: JSON.stringify(body),
   });
@@ -37,14 +33,41 @@ async function callGateway(body: Record<string, unknown>): Promise<GatewayRespon
     throw AppError.aiGenerationFailed("Too many requests right now — please try again in a moment.");
   }
   if (res.status === 402) {
-    throw AppError.aiGenerationFailed("AI credits are exhausted. Add credits in Settings → Plans & credits.");
+    throw AppError.aiGenerationFailed("AI credits are exhausted.");
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    logger.error({ status: res.status, detail }, "AI gateway request failed");
+    logger.error({ status: res.status, detail }, "OpenAI chat request failed");
     throw AppError.aiGenerationFailed("The AI request failed. Please try again.");
   }
-  return res.json() as Promise<GatewayResponse>;
+  return res.json() as Promise<ChatResponse>;
+}
+
+async function callOpenAIImage(prompt: string): Promise<string> {
+  const res = await fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey()}`,
+    },
+    body: JSON.stringify({
+      model: "dall-e-3",
+      prompt,
+      n: 1,
+      size: "1024x1024",
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    logger.error({ status: res.status, detail }, "OpenAI image request failed");
+    throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
+  }
+
+  const data = (await res.json()) as ImageResponse;
+  const url = data.data?.[0]?.url;
+  if (!url) throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
+  return url;
 }
 
 /** Raw text-completion call. The caller is responsible for schema validation. */
@@ -56,8 +79,8 @@ export async function requestSermonPlanJson(input: {
   focus: string;
   repairNote?: string;
 }): Promise<string> {
-  const data = await callGateway({
-    model: "google/gemini-3.6-flash",
+  const data = await callOpenAIChat({
+    model: "gpt-4o",
     response_format: { type: "json_object" },
     messages: [
       {
@@ -96,64 +119,21 @@ Return json with exactly these keys:
 }
 
 export async function generateIllustration(prompt: string): Promise<string> {
-  const data = await callGateway({
-    model: "google/gemini-2.5-flash-image",
-    modalities: ["image", "text"],
-    messages: [
-      {
-        role: "user",
-        content: `${prompt}. Child-friendly, gentle, reverent, no text or lettering anywhere in the image.`,
-      },
-    ],
-  });
-
-  const url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-  if (!url) throw AppError.imageGenerationFailed("The illustration could not be generated. Please try again.");
-  return url;
+  return callOpenAIImage(`${prompt}. Child-friendly, gentle, reverent, no text or lettering anywhere in the image.`);
 }
 
-/**
- * Coloring pages (Prompt 13) need a distinct prompt from the storybook
- * illustration: pure black-and-white line art, no color or shading at all,
- * large simple shapes a child can actually color inside, printer-friendly.
- * Kept as its own gateway call (rather than reusing generateIllustration)
- * so the prompt engineering for "coloring page" doesn't leak into or get
- * diluted by the illustration prompt.
- */
 export async function generateColoringPageImage(scenePrompt: string): Promise<string> {
-  const data = await callGateway({
-    model: "google/gemini-2.5-flash-image",
-    modalities: ["image", "text"],
-    messages: [
-      {
-        role: "user",
-        content: `Black-and-white line-art coloring page for children, illustrating: ${scenePrompt}. Bold clean outlines only, pure white background, no shading, no gradients, no color, no gray fill, no text or lettering anywhere, large simple uncluttered shapes that are easy for a young child to color inside, printer-friendly.`,
-      },
-    ],
-  });
-
-  const url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-  if (!url) {
-    throw AppError.imageGenerationFailed("The coloring page could not be generated. Please try again.");
-  }
-  return url;
+  return callOpenAIImage(`Black-and-white line-art coloring page for children, illustrating: ${scenePrompt}. Bold clean outlines only, pure white background, no shading, no gradients, no color, no gray fill, no text or lettering anywhere, large simple uncluttered shapes that are easy for a young child to color inside, printer-friendly.`);
 }
 
-/**
- * Regenerates a single lesson module (Prompt 10/14 "Regenerate module").
- * `promptBody` is the module-specific instructions + JSON shape built by
- * the caller (lessonService knows the schema per module); this function
- * just handles the gateway round-trip and repair note plumbing, same as
- * requestSermonPlanJson does for the full lesson.
- */
 export async function requestModuleRegenerationJson(input: {
   context: string;
   promptBody: string;
   instruction: string;
   repairNote?: string;
 }): Promise<string> {
-  const data = await callGateway({
-    model: "google/gemini-3.6-flash",
+  const data = await callOpenAIChat({
+    model: "gpt-4o",
     response_format: { type: "json_object" },
     messages: [
       {
