@@ -130,54 +130,58 @@ export function MyLessonsPage() {
       )}
 
       <ul className="mt-8 space-y-4">
-        {lessons.map((lesson) => (
-          <li key={lesson.id} className="paper-card flex flex-wrap items-center gap-4 p-5">
-            <div className="min-w-0 flex-1">
-              <Link to={`/lesson/${lesson.id}`} className="font-display text-xl font-bold hover:underline">
-                {lesson.title}
-              </Link>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {lesson.bibleReference} · {lesson.ageGroup} · {lesson.durationMinutes} min
-                {lesson.reviewRequired && (
-                  <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">
-                    Review Scripture
-                  </span>
-                )}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onToggleFavorite(lesson.id, lesson.isFavorite)}
-              aria-label={lesson.isFavorite ? "Remove from favorites" : "Add to favorites"}
-              title={lesson.isFavorite ? "Remove from favorites" : "Add to favorites"}
-              className={`rounded-full border-2 p-2 transition-colors ${
-                lesson.isFavorite
-                  ? "border-accent bg-accent/15 text-accent"
-                  : "border-border text-muted-foreground hover:border-accent"
-              }`}
-            >
-              {lesson.isFavorite ? <Star className="h-4 w-4 fill-current" /> : <Heart className="h-4 w-4" />}
-            </button>
-            <button
-              type="button"
-              onClick={() => onToggleArchive(lesson.id, lesson.isArchived)}
-              aria-label={lesson.isArchived ? "Restore" : "Archive"}
-              title={lesson.isArchived ? "Restore" : "Archive"}
-              className="rounded-full border-2 border-border p-2 text-muted-foreground hover:border-primary"
-            >
-              {lesson.isArchived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
-            </button>
-            <button
-              type="button"
-              onClick={() => onDelete(lesson.id, lesson.title)}
-              aria-label="Delete"
-              title="Delete"
-              className="rounded-full border-2 border-destructive/40 p-2 text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </li>
-        ))}
+        {lessons.map((lesson: any) => {
+          const lessonId = lesson.id ?? lesson._id;
+
+          return (
+            <li key={lessonId} className="paper-card flex flex-wrap items-center gap-4 p-5">
+              <div className="min-w-0 flex-1">
+                <Link to={`/lesson/${lessonId}`} className="font-display text-xl font-bold hover:underline">
+                  {lesson.title}
+                </Link>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {lesson.bibleReference} · {lesson.ageGroup} · {lesson.durationMinutes} min
+                  {lesson.reviewRequired && (
+                    <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">
+                      Review Scripture
+                    </span>
+                  )}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onToggleFavorite(lessonId, lesson.isFavorite)}
+                aria-label={lesson.isFavorite ? "Remove from favorites" : "Add to favorites"}
+                title={lesson.isFavorite ? "Remove from favorites" : "Add to favorites"}
+                className={`rounded-full border-2 p-2 transition-colors ${
+                  lesson.isFavorite
+                    ? "border-accent bg-accent/15 text-accent"
+                    : "border-border text-muted-foreground hover:border-accent"
+                }`}
+              >
+                {lesson.isFavorite ? <Star className="h-4 w-4 fill-current" /> : <Heart className="h-4 w-4" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleArchive(lessonId, lesson.isArchived)}
+                aria-label={lesson.isArchived ? "Restore" : "Archive"}
+                title={lesson.isArchived ? "Restore" : "Archive"}
+                className="rounded-full border-2 border-border p-2 text-muted-foreground hover:border-primary"
+              >
+                {lesson.isArchived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(lessonId, lesson.title)}
+                aria-label="Delete"
+                title="Delete"
+                className="rounded-full border-2 border-destructive/40 p-2 text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </main>
   );
