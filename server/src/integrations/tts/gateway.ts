@@ -47,11 +47,10 @@ export async function requestNarrationAudio(input: {
         },
 
         body: JSON.stringify({
-          model: "gpt-4o-mini-tts",
+          model: "tts-1",
           input: input.text,
           voice: input.voice,
           response_format: "mp3",
-          instructions,
         }),
       }
     );
