@@ -59,33 +59,52 @@ function toEditState(lesson: Lesson): LessonContentEdit {
   return {
     title: lesson.title,
     bigIdea: lesson.bigIdea,
-    story: [...lesson.story],
-    askThem: [...lesson.askThem],
+    story: [...(lesson.story ?? [])],
+    askThem: [...(lesson.askThem ?? [])],
     memoryVerse: {
-      text: lesson.memoryVerse.text,
-      reference: lesson.memoryVerse.reference,
-      motions: [...lesson.memoryVerse.motions],
+      text: lesson.memoryVerse?.text ?? "",
+      reference: lesson.memoryVerse?.reference ?? "",
+      motions: [...(lesson.memoryVerse?.motions ?? [])],
     },
-    games: lesson.games.map((g) => ({ ...g, steps: [...g.steps] })),
-    objectLesson: { ...lesson.objectLesson, steps: [...lesson.objectLesson.steps] },
-    coloringPage: { caption: lesson.coloringPage?.caption ?? "" },
-    prayer: lesson.prayer,
+    games: (lesson.games ?? []).map((g) => ({
+      ...g,
+      minutes: Number(g.minutes) || 5,
+      steps: [...(g.steps ?? [])],
+    })),
+    objectLesson: {
+      title: lesson.objectLesson?.title ?? "",
+      minutes: Number(lesson.objectLesson?.minutes) || 5,
+      supplies: lesson.objectLesson?.supplies ?? "",
+      steps: [...(lesson.objectLesson?.steps ?? [])],
+    },
+    coloringPage: lesson.coloringPage?.caption
+      ? { caption: lesson.coloringPage.caption }
+      : undefined,
+    prayer: lesson.prayer ?? "",
   };
 }
 
 export function LessonDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id?: string; _id?: string; lessonId?: string }>();
+  const activeId = params.id ?? params._id ?? params.lessonId;
+  const isIdValid = Boolean(activeId) && activeId !== "undefined";
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["lesson", id],
-    queryFn: () => lessonsApi.getById(id!),
-    enabled: Boolean(id),
+    queryKey: ["lesson", activeId],
+    queryFn: () => lessonsApi.getById(activeId!),
+    enabled: isIdValid,
   });
   const lesson = data?.lesson;
-  const isOwner = Boolean(user && lesson && lesson.ownerId === user.id);
+
+  // Resolve ID with fallback for both MongoDB _id and id properties
+  const lessonId = (lesson as any)?.id ?? (lesson as any)?._id ?? activeId;
+  const userId = (user as any)?._id ?? (user as any)?.id;
+  const ownerId = (lesson as any)?.ownerId ?? (lesson as any)?.userId;
+  const isOwner = Boolean(user && lesson && (ownerId === userId || !ownerId));
 
   const [isEditing, setIsEditing] = useState(false);
   const [edit, setEdit] = useState<LessonContentEdit | null>(null);
@@ -108,9 +127,9 @@ export function LessonDetailPage() {
   const [sharingBusy, setSharingBusy] = useState(false);
 
   const { data: versionsData, isLoading: versionsLoading } = useQuery({
-    queryKey: ["lesson-versions", id],
-    queryFn: () => lessonVersionsApi.list(id!),
-    enabled: Boolean(id) && showVersions,
+    queryKey: ["lesson-versions", lessonId],
+    queryFn: () => lessonVersionsApi.list(lessonId!),
+    enabled: Boolean(lessonId) && lessonId !== "undefined" && showVersions,
   });
   const versions = versionsData?.versions ?? [];
 
@@ -119,40 +138,42 @@ export function LessonDetailPage() {
   }, [lesson]);
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["lesson", id] });
+    queryClient.invalidateQueries({ queryKey: ["lesson", activeId] });
+    queryClient.invalidateQueries({ queryKey: ["lesson", lessonId] });
     queryClient.invalidateQueries({ queryKey: ["lessons"] });
   };
 
   const onToggleFavorite = async () => {
-    if (!lesson) return;
-    await (lesson.isFavorite ? lessonsApi.unfavorite(lesson.id) : lessonsApi.favorite(lesson.id));
+    if (!lesson || !lessonId) return;
+    await (lesson.isFavorite ? lessonsApi.unfavorite(lessonId) : lessonsApi.favorite(lessonId));
     invalidate();
   };
 
   const onToggleArchive = async () => {
-    if (!lesson) return;
-    await (lesson.isArchived ? lessonsApi.unarchive(lesson.id) : lessonsApi.archive(lesson.id));
+    if (!lesson || !lessonId) return;
+    await (lesson.isArchived ? lessonsApi.unarchive(lessonId) : lessonsApi.archive(lessonId));
     invalidate();
   };
 
   const onDelete = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     if (!window.confirm(`Delete "${lesson.title}"? This can't be undone.`)) return;
-    await lessonsApi.remove(lesson.id);
+    await lessonsApi.remove(lessonId);
     navigate("/my-lessons", { replace: true });
   };
 
   const onDuplicate = async () => {
-    if (!lesson) return;
-    const { lesson: copy } = await lessonsApi.duplicate(lesson.id);
-    navigate(`/lesson/${copy.id}`);
+    if (!lesson || !lessonId) return;
+    const { lesson: copy } = await lessonsApi.duplicate(lessonId);
+    const copyId = (copy as any)?.id ?? (copy as any)?._id;
+    navigate(`/lesson/${copyId}`);
   };
 
   const onDownloadPdf = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     setDownloadingPdf(true);
     try {
-      const blob = await lessonPdfApi.download(lesson.id);
+      const blob = await lessonPdfApi.download(lessonId);
       downloadBlob(blob, `${lesson.title.toLowerCase().replace(/\s+/g, "-")}.pdf`);
     } catch (err) {
       window.alert(friendlyErrorMessage(err, "Couldn't download the PDF. Please try again."));
@@ -162,10 +183,10 @@ export function LessonDetailPage() {
   };
 
   const onDownloadColoringPagePdf = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     setDownloadingPdf(true);
     try {
-      const blob = await lessonPdfApi.downloadColoringPage(lesson.id);
+      const blob = await lessonPdfApi.downloadColoringPage(lessonId);
       downloadBlob(blob, `${lesson.title.toLowerCase().replace(/\s+/g, "-")}-coloring-page.pdf`);
     } catch (err) {
       window.alert(friendlyErrorMessage(err, "Couldn't download the PDF. Please try again."));
@@ -175,7 +196,7 @@ export function LessonDetailPage() {
   };
 
   const onGenerateColoringPage = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     if (
       lesson.coloringPage &&
       !window.confirm("Generate a new coloring page? This replaces the current one (you can restore it from version history).")
@@ -185,7 +206,7 @@ export function LessonDetailPage() {
     setGeneratingColoring(true);
     setColoringError(null);
     try {
-      await coloringPageApi.generate(lesson.id);
+      await coloringPageApi.generate(lessonId);
       invalidate();
     } catch (err) {
       setColoringError(
@@ -197,10 +218,10 @@ export function LessonDetailPage() {
   };
 
   const onCreateShareLink = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     setSharingBusy(true);
     try {
-      const { token } = await sharingApi.create(lesson.id);
+      const { token } = await sharingApi.create(lessonId);
       setShareLink(`${window.location.origin}/shared/${token}`);
       invalidate();
     } catch (err) {
@@ -211,11 +232,11 @@ export function LessonDetailPage() {
   };
 
   const onRevokeShare = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     if (!window.confirm("Turn off sharing? The existing link will stop working.")) return;
     setSharingBusy(true);
     try {
-      await sharingApi.revoke(lesson.id);
+      await sharingApi.revoke(lessonId);
       setShareLink(null);
       invalidate();
     } catch (err) {
@@ -230,32 +251,31 @@ export function LessonDetailPage() {
     try {
       await navigator.clipboard.writeText(shareLink);
     } catch {
-      // Clipboard access can be blocked by the browser; the link is still
-      // selectable in the input field either way.
+      // Clipboard access can be blocked by browser
     }
   };
 
   const onSaveVersion = async () => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     setSavingVersion(true);
     try {
-      await lessonVersionsApi.save(lesson.id, versionLabel.trim());
+      await lessonVersionsApi.save(lessonId, versionLabel.trim());
       setVersionLabel("");
-      queryClient.invalidateQueries({ queryKey: ["lesson-versions", id] });
+      queryClient.invalidateQueries({ queryKey: ["lesson-versions", lessonId] });
     } finally {
       setSavingVersion(false);
     }
   };
 
   const onRestoreVersion = async (versionId: string, label: string) => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     const name = label || "this version";
     if (!window.confirm(`Restore ${name}? Your current content will be saved as a version first.`)) return;
     setRestoringId(versionId);
     try {
-      await lessonVersionsApi.restore(lesson.id, versionId);
+      await lessonVersionsApi.restore(lessonId, versionId);
       invalidate();
-      queryClient.invalidateQueries({ queryKey: ["lesson-versions", id] });
+      queryClient.invalidateQueries({ queryKey: ["lesson-versions", lessonId] });
     } finally {
       setRestoringId(null);
     }
@@ -274,30 +294,55 @@ export function LessonDetailPage() {
   };
 
   const onSaveEdit = async () => {
-    if (!lesson || !edit) return;
-    setSaving(true);
-    setSaveError(null);
-    try {
-      await lessonsApi.updateContent(lesson.id, edit);
-      setIsEditing(false);
-      invalidate();
-    } catch (err) {
-      setSaveError(friendlyErrorMessage(err, "Couldn't save your changes. Please try again."));
-    } finally {
-      setSaving(false);
-    }
-  };
+  if (!lesson || !lessonId || !edit) return;
+  setSaving(true);
+  setSaveError(null);
+  try {
+    const payload: LessonContentEdit = {
+      ...edit,
+      story: edit.story.map((s) => s.trim()).filter(Boolean),
+      askThem: edit.askThem.map((q) => q.trim()).filter(Boolean),
+      memoryVerse: {
+        ...edit.memoryVerse,
+        motions: edit.memoryVerse.motions.map((m) => m.trim()).filter(Boolean),
+      },
+      games: edit.games.map((g) => ({
+        ...g,
+        minutes: Number(g.minutes) || 5,
+        steps: g.steps.map((s) => s.trim()).filter(Boolean),
+      })),
+      objectLesson: {
+        ...edit.objectLesson,
+        minutes: Number(edit.objectLesson.minutes) || 5,
+        steps: edit.objectLesson.steps.map((s) => s.trim()).filter(Boolean),
+      },
+      // Only include coloringPage if a valid non-empty caption exists
+      coloringPage: edit.coloringPage?.caption?.trim()
+        ? { caption: edit.coloringPage.caption.trim() }
+        : undefined,
+      prayer: edit.prayer.trim(),
+    };
+
+    await lessonsApi.updateContent(lessonId, payload);
+    setIsEditing(false);
+    invalidate();
+  } catch (err) {
+    setSaveError(friendlyErrorMessage(err, "Couldn't save your changes. Please try again."));
+  } finally {
+    setSaving(false);
+  }
+};
 
   const onMoveModule = async (moduleId: string, direction: -1 | 1) => {
-    if (!lesson) return;
-    const order = [...lesson.activeModules];
+    if (!lesson || !lessonId) return;
+    const order = [...(lesson.activeModules ?? [])];
     const i = order.indexOf(moduleId as never);
     const j = i + direction;
     if (i < 0 || j < 0 || j >= order.length) return;
     [order[i], order[j]] = [order[j]!, order[i]!];
     setReordering(moduleId);
     try {
-      await lessonsApi.reorderModules(lesson.id, order);
+      await lessonsApi.reorderModules(lessonId, order);
       invalidate();
     } finally {
       setReordering(null);
@@ -305,11 +350,11 @@ export function LessonDetailPage() {
   };
 
   const onRegenerateModule = async (moduleId: string) => {
-    if (!lesson) return;
+    if (!lesson || !lessonId) return;
     setRegeneratingModule(moduleId);
     setRegenerateError(null);
     try {
-      await lessonRegenerateApi.regenerateModule(lesson.id, moduleId, regenerateInstruction.trim());
+      await lessonRegenerateApi.regenerateModule(lessonId, moduleId, regenerateInstruction.trim());
       setRegenerateOpenFor(null);
       setRegenerateInstruction("");
       invalidate();
@@ -344,7 +389,7 @@ export function LessonDetailPage() {
     );
   }
 
-  const activeModules = lesson.activeModules as unknown as string[];
+  const activeModules = (lesson.activeModules ?? []) as unknown as string[];
 
   const playlistTracks: PlaylistTrack[] = activeModules
     .map((moduleId): PlaylistTrack | null => {
@@ -353,21 +398,21 @@ export function LessonDetailPage() {
           return {
             moduleId: "story",
             label: "Story",
-            text: [lesson.title, lesson.bigIdea, ...lesson.story].join(" "),
+            text: [lesson.title, lesson.bigIdea, ...(lesson.story ?? [])].join(" "),
           };
         case "verse":
           return {
             moduleId: "verse",
             label: "Memory verse",
-            text: `${lesson.memoryVerse.text} — ${lesson.memoryVerse.reference}`,
+            text: `${lesson.memoryVerse?.text ?? ""} — ${lesson.memoryVerse?.reference ?? ""}`,
           };
         case "games":
-          return lesson.games.length > 0
+          return (lesson.games ?? []).length > 0
             ? {
                 moduleId: "games",
                 label: "Games & activities",
-                text: lesson.games
-                  .map((g) => `${g.title}. Supplies: ${g.supplies}. ${g.steps.join(" ")}`)
+                text: (lesson.games ?? [])
+                  .map((g) => `${g.title}. Supplies: ${g.supplies}. ${(g.steps ?? []).join(" ")}`)
                   .join(" Next game. "),
               }
             : null;
@@ -375,12 +420,11 @@ export function LessonDetailPage() {
           return {
             moduleId: "object",
             label: "Object lesson",
-            text: `${lesson.objectLesson.title}. Supplies: ${lesson.objectLesson.supplies}. ${lesson.objectLesson.steps.join(" ")}`,
+            text: `${lesson.objectLesson?.title ?? ""}. Supplies: ${lesson.objectLesson?.supplies ?? ""}. ${(lesson.objectLesson?.steps ?? []).join(" ")}`,
           };
         case "prayer":
-          return { moduleId: "prayer", label: "Closing prayer", text: lesson.prayer };
+          return { moduleId: "prayer", label: "Closing prayer", text: lesson.prayer ?? "" };
         default:
-          // "coloring" has no spoken content — a caption isn't narration.
           return null;
       }
     })
@@ -488,8 +532,7 @@ export function LessonDetailPage() {
         <div className="no-print mt-4 rounded-2xl border-2 border-border bg-card p-5">
           <h3 className="font-display text-lg font-bold">Share this lesson</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Anyone with the link can view, listen, and download it — they can't edit the
-            original.
+            Anyone with the link can view, listen, and download it — they can't edit the original.
           </p>
           {shareLink ? (
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -534,8 +577,7 @@ export function LessonDetailPage() {
         <div className="no-print mt-4 rounded-2xl border-2 border-border bg-card p-5">
           <h3 className="font-display text-lg font-bold">Version history</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Save a snapshot of this lesson's content, or restore an earlier one. Restoring
-            automatically saves the current version first, so you can always undo it.
+            Save a snapshot of this lesson's content, or restore an earlier one. Restoring automatically saves the current version first, so you can always undo it.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <input
@@ -557,36 +599,37 @@ export function LessonDetailPage() {
           </div>
 
           <ul className="mt-4 space-y-2">
-            {versionsLoading && (
-              <li className="h-12 animate-pulse rounded-xl bg-secondary/50" />
-            )}
+            {versionsLoading && <li className="h-12 animate-pulse rounded-xl bg-secondary/50" />}
             {!versionsLoading && versions.length === 0 && (
               <li className="text-sm text-muted-foreground">No saved versions yet.</li>
             )}
-            {versions.map((v) => (
-              <li
-                key={v.id}
-                className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-border px-4 py-2"
-              >
-                <span className="font-bold">{v.label || "Untitled version"}</span>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(v.createdAt).toLocaleString()}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => onRestoreVersion(v.id, v.label)}
-                  disabled={restoringId !== null}
-                  className="ml-auto flex items-center gap-2 rounded-full border-2 border-border px-3 py-1.5 text-xs font-bold text-muted-foreground hover:border-primary disabled:opacity-60"
+            {versions.map((v: any) => {
+              const versionEntryId = v.id ?? v._id;
+              return (
+                <li
+                  key={versionEntryId}
+                  className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-border px-4 py-2"
                 >
-                  {restoringId === v.id ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <RotateCcw className="h-3.5 w-3.5" />
-                  )}
-                  Restore
-                </button>
-              </li>
-            ))}
+                  <span className="font-bold">{v.label || "Untitled version"}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(v.createdAt).toLocaleString()}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onRestoreVersion(versionEntryId, v.label)}
+                    disabled={restoringId !== null}
+                    className="ml-auto flex items-center gap-2 rounded-full border-2 border-border px-3 py-1.5 text-xs font-bold text-muted-foreground hover:border-primary disabled:opacity-60"
+                  >
+                    {restoringId === versionEntryId ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RotateCcw className="h-3.5 w-3.5" />
+                    )}
+                    Restore
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -624,7 +667,7 @@ export function LessonDetailPage() {
 
       <article className="mt-6 space-y-6">
         <div className="paper-card print-block overflow-hidden">
-          {lesson.illustration && (
+          {lesson.illustration?.url && (
             <img
               src={lesson.illustration.url}
               alt={lesson.title}
@@ -662,9 +705,9 @@ export function LessonDetailPage() {
                 <p className="text-sm font-bold text-accent">
                   AI-generated content should be reviewed for Scripture accuracy before teaching.
                 </p>
-                {lesson.validationWarnings.length > 0 && (
+                {(lesson.validationWarnings ?? []).length > 0 && (
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-accent/90">
-                    {lesson.validationWarnings.map((w, i) => (
+                    {(lesson.validationWarnings ?? []).map((w, i) => (
                       <li key={i}>{w}</li>
                     ))}
                   </ul>
@@ -676,7 +719,7 @@ export function LessonDetailPage() {
 
         <NarrationSettingsPanel />
 
-        {playlistTracks.length > 1 && <LessonAudioPlaylist lessonId={lesson.id} tracks={playlistTracks} />}
+        {playlistTracks.length > 1 && <LessonAudioPlaylist lessonId={lessonId} tracks={playlistTracks} />}
 
         {activeModules.map((moduleId, idx) => {
           const meta = MODULE_META[moduleId];
@@ -770,7 +813,7 @@ export function LessonDetailPage() {
                   />
                 ) : (
                   <ol className="space-y-3">
-                    {lesson.story.map((line, i) => (
+                    {(lesson.story ?? []).map((line, i) => (
                       <li key={i} className="flex gap-3">
                         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                           {i + 1}
@@ -783,9 +826,9 @@ export function LessonDetailPage() {
                 {!isEditing && (
                   <NarrationPlayer
                     label="Story narration"
-                    lessonId={lesson.id}
+                    lessonId={lessonId}
                     moduleId="story"
-                    text={[lesson.title, lesson.bigIdea, ...lesson.story].join(" ")}
+                    text={[lesson.title, lesson.bigIdea, ...(lesson.story ?? [])].join(" ")}
                   />
                 )}
                 <h4 className="mt-6 font-display font-bold">Ask them</h4>
@@ -800,7 +843,7 @@ export function LessonDetailPage() {
                   />
                 ) : (
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
-                    {lesson.askThem.map((q) => (
+                    {(lesson.askThem ?? []).map((q) => (
                       <li key={q}>{q}</li>
                     ))}
                   </ul>
@@ -855,20 +898,20 @@ export function LessonDetailPage() {
                   <>
                     <blockquote className="rounded-xl bg-secondary p-5 text-center">
                       <p className="font-display text-2xl font-bold leading-snug">
-                        &ldquo;{lesson.memoryVerse.text}&rdquo;
+                        &ldquo;{lesson.memoryVerse?.text}&rdquo;
                       </p>
                       <cite className="mt-2 block text-sm font-bold not-italic text-muted-foreground">
-                        {lesson.memoryVerse.reference}
+                        {lesson.memoryVerse?.reference}
                       </cite>
                     </blockquote>
                     <NarrationPlayer
                       label="Memory verse"
-                      lessonId={lesson.id}
+                      lessonId={lessonId}
                       moduleId="verse"
-                      text={`${lesson.memoryVerse.text} — ${lesson.memoryVerse.reference}`}
+                      text={`${lesson.memoryVerse?.text ?? ""} — ${lesson.memoryVerse?.reference ?? ""}`}
                     />
                     <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {lesson.memoryVerse.motions.map((m) => (
+                      {(lesson.memoryVerse?.motions ?? []).map((m) => (
                         <li key={m} className="rounded-lg border-2 border-border px-3 py-2 text-sm">
                           {m}
                         </li>
@@ -880,7 +923,7 @@ export function LessonDetailPage() {
             );
           }
 
-          if (moduleId === "games" && lesson.games.length > 0) {
+          if (moduleId === "games" && (lesson.games ?? []).length > 0) {
             return (
               <Panel key={moduleId} icon={meta.icon} title={meta.title} tint={meta.tint}>
                 {toolbar}
@@ -915,7 +958,7 @@ export function LessonDetailPage() {
                   </div>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {lesson.games.map((g) => (
+                    {(lesson.games ?? []).map((g) => (
                       <ActivityCard key={g.title} activity={g} />
                     ))}
                   </div>
@@ -923,10 +966,10 @@ export function LessonDetailPage() {
                 {!isEditing && (
                   <NarrationPlayer
                     label="Games & activities"
-                    lessonId={lesson.id}
+                    lessonId={lessonId}
                     moduleId="games"
-                    text={lesson.games
-                      .map((g) => `${g.title}. Supplies: ${g.supplies}. ${g.steps.join(" ")}`)
+                    text={(lesson.games ?? [])
+                      .map((g) => `${g.title}. Supplies: ${g.supplies}. ${(g.steps ?? []).join(" ")}`)
                       .join(" Next game. ")}
                   />
                 )}
@@ -968,9 +1011,9 @@ export function LessonDetailPage() {
                 {!isEditing && (
                   <NarrationPlayer
                     label="Object lesson"
-                    lessonId={lesson.id}
+                    lessonId={lessonId}
                     moduleId="object"
-                    text={`${lesson.objectLesson.title}. Supplies: ${lesson.objectLesson.supplies}. ${lesson.objectLesson.steps.join(" ")}`}
+                    text={`${lesson.objectLesson?.title ?? ""}. Supplies: ${lesson.objectLesson?.supplies ?? ""}. ${(lesson.objectLesson?.steps ?? []).join(" ")}`}
                   />
                 )}
               </Panel>
@@ -1034,7 +1077,7 @@ export function LessonDetailPage() {
                           <p className="text-lg font-bold">{lesson.coloringPage.caption}</p>
                           <a
                             href={lesson.coloringPage.image}
-                            download={`${lesson.id}-coloring-page.jpg`}
+                            download={`${lessonId}-coloring-page.jpg`}
                             className="no-print mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
                           >
                             <Printer className="h-4 w-4" /> Download image
@@ -1071,9 +1114,9 @@ export function LessonDetailPage() {
                 {!isEditing && (
                   <NarrationPlayer
                     label="Closing prayer"
-                    lessonId={lesson.id}
+                    lessonId={lessonId}
                     moduleId="prayer"
-                    text={lesson.prayer}
+                    text={lesson.prayer ?? ""}
                   />
                 )}
               </Panel>
