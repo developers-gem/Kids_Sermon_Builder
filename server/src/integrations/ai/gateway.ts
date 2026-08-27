@@ -8,7 +8,7 @@ function apiKey(): string {
   }
   return env.OPENAI_API_KEY;
 }
-
+ 
 type ChatResponse = {
   choices: {
     message: { content: string };
@@ -16,7 +16,10 @@ type ChatResponse = {
 };
 
 type ImageResponse = {
-  data: { url: string }[];
+  data: {
+    b64_json?: string;
+    url?: string;
+  }[];
 };
 
 async function callOpenAIChat(body: Record<string, unknown>): Promise<ChatResponse> {
@@ -43,6 +46,33 @@ async function callOpenAIChat(body: Record<string, unknown>): Promise<ChatRespon
   return res.json() as Promise<ChatResponse>;
 }
 
+// async function callOpenAIImage(prompt: string): Promise<string> {
+//   const res = await fetch("https://api.openai.com/v1/images/generations", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Authorization": `Bearer ${apiKey()}`,
+//     },
+//     body: JSON.stringify({
+//       model: "gpt-image-1",
+//       prompt,
+//       // n: 1,
+//       size: "1024x1024",
+//     }),
+//   });
+
+//   if (!res.ok) {
+//     const detail = await res.text().catch(() => "");
+//     logger.error({ status: res.status, detail }, "OpenAI image request failed");
+//     throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
+//   }
+
+//   const data = (await res.json()) as ImageResponse;
+//   const url = data.data?.[0]?.url;
+//   if (!url) throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
+//   return url;
+// }
+
 async function callOpenAIImage(prompt: string): Promise<string> {
   const res = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
@@ -51,23 +81,74 @@ async function callOpenAIImage(prompt: string): Promise<string> {
       "Authorization": `Bearer ${apiKey()}`,
     },
     body: JSON.stringify({
-      model: "dall-e-3",
+      model: "gpt-image-1",
       prompt,
-      n: 1,
       size: "1024x1024",
     }),
   });
 
+  const raw = await res.text();
+
   if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    logger.error({ status: res.status, detail }, "OpenAI image request failed");
-    throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
+    logger.error(
+      {
+        status: res.status,
+        detail: raw,
+      },
+      "OpenAI image request failed",
+    );
+
+    throw AppError.imageGenerationFailed(
+      "The image could not be generated. Please try again.",
+    );
   }
 
-  const data = (await res.json()) as ImageResponse;
-  const url = data.data?.[0]?.url;
-  if (!url) throw AppError.imageGenerationFailed("The image could not be generated. Please try again.");
-  return url;
+  let data: ImageResponse;
+
+  try {
+    data = JSON.parse(raw) as ImageResponse;
+  } catch (err) {
+    logger.error(
+      { err, raw },
+      "Invalid JSON returned by OpenAI image API",
+    );
+
+    throw AppError.imageGenerationFailed(
+      "The image service returned an invalid response.",
+    );
+  }
+
+  const image = data.data?.[0];
+
+  if (!image) {
+    logger.error(
+      { data },
+      "OpenAI returned no image data",
+    );
+
+    throw AppError.imageGenerationFailed(
+      "The image service returned no image.",
+    );
+  }
+
+  // GPT Image response
+  if (image.b64_json) {
+    return `data:image/png;base64,${image.b64_json}`;
+  }
+
+  // Fallback if API returns a URL
+  if (image.url) {
+    return image.url;
+  }
+
+  logger.error(
+    { data },
+    "OpenAI response contained neither b64_json nor url",
+  );
+
+  throw AppError.imageGenerationFailed(
+    "The image service returned an unusable image.",
+  );
 }
 
 /** Raw text-completion call. The caller is responsible for schema validation. */

@@ -8,7 +8,7 @@ import {
   Heart,
   Lightbulb,
   Loader2,
-  MoveDown,
+  MoveDown, 
   MoveUp,
   Palette,
   Printer,
