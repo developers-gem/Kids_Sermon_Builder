@@ -14,12 +14,16 @@ export type AccessTokenPayload = { sub: string; role: "user" | "admin" };
 export type RefreshTokenPayload = { sub: string; ver: number };
 
 export function signAccessToken(payload: AccessTokenPayload): string {
-  const options: jwt.SignOptions = { expiresIn: env.JWT_ACCESS_TTL as jwt.SignOptions["expiresIn"] };
+  const options: jwt.SignOptions = {
+    expiresIn: (env.JWT_ACCESS_TTL || "30d") as jwt.SignOptions["expiresIn"],
+  };
   return jwt.sign(payload, env.JWT_ACCESS_SECRET, options);
 }
 
 export function signRefreshToken(payload: RefreshTokenPayload): string {
-  const options: jwt.SignOptions = { expiresIn: env.JWT_REFRESH_TTL as jwt.SignOptions["expiresIn"] };
+  const options: jwt.SignOptions = {
+    expiresIn: (env.JWT_REFRESH_TTL || "90d") as jwt.SignOptions["expiresIn"],
+  };
   return jwt.sign(payload, env.JWT_REFRESH_SECRET, options);
 }
 

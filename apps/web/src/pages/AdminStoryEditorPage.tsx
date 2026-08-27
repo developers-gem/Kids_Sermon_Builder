@@ -27,13 +27,13 @@ const EMPTY: AdminStoryInput = {
 
 export function AdminStoryEditorPage() {
   const { id } = useParams<{ id: string }>();
-  const isNew = !id;
+  const isNew = !id || id === "undefined" || id === "new";
   const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-story", id],
     queryFn: () => adminStoriesApi.getById(id!),
-    enabled: !isNew,
+    enabled: !isNew && Boolean(id) && id !== "undefined",
   });
 
   const [form, setForm] = useState<AdminStoryInput>(EMPTY);
@@ -44,23 +44,23 @@ export function AdminStoryEditorPage() {
     if (data?.story) {
       const s = data.story;
       setForm({
-        slug: s.slug,
-        title: s.title,
-        reference: s.reference,
-        theme: s.theme,
-        ageRange: s.ageRange,
-        image: s.image,
-        imageAlt: s.imageAlt,
-        bigIdea: s.bigIdea,
-        tellIt: s.tellIt,
-        askThem: s.askThem,
-        memoryVerse: s.memoryVerse,
-        games: s.games,
-        objectLesson: s.objectLesson,
-        coloringPage: s.coloringPage,
-        prayer: s.prayer,
-        status: s.status,
-        featured: s.featured,
+        slug: s.slug ?? "",
+        title: s.title ?? "",
+        reference: s.reference ?? "",
+        theme: s.theme ?? "",
+        ageRange: s.ageRange ?? "",
+        image: s.image ?? "",
+        imageAlt: s.imageAlt ?? "",
+        bigIdea: s.bigIdea ?? "",
+        tellIt: s.tellIt ?? [""],
+        askThem: s.askThem ?? [""],
+        memoryVerse: s.memoryVerse ?? { text: "", reference: "", motions: [""] },
+        games: s.games?.length ? s.games : [{ title: "", minutes: 5, supplies: "", steps: [""] }],
+        objectLesson: s.objectLesson ?? { title: "", minutes: 5, supplies: "", steps: [""] },
+        coloringPage: s.coloringPage ?? { image: "", alt: "", caption: "" },
+        prayer: s.prayer ?? "",
+        status: s.status ?? "draft",
+        featured: Boolean(s.featured),
       });
     }
   }, [data]);
@@ -71,8 +71,9 @@ export function AdminStoryEditorPage() {
     setError(null);
     try {
       if (isNew) {
-        const { story } = await adminStoriesApi.create(form);
-        navigate(`/admin/stories/${story.id}/edit`, { replace: true });
+        const res = await adminStoriesApi.create(form);
+        const storyId = (res.story as any)?.id ?? (res.story as any)?._id;
+        navigate(`/admin/stories/${storyId}/edit`, { replace: true });
       } else {
         await adminStoriesApi.update(id!, form);
       }
