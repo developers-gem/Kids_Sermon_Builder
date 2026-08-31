@@ -168,13 +168,7 @@ function apiKey(): string {
   }
   return env.OPENAI_API_KEY;
 }
-<<<<<<< HEAD
-
-const CHAT_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
-
-=======
- 
->>>>>>> b5b5563eb3c2d2f6e586d9154bdf3de6e4baa0a6
+const CHAT_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini"; 
 type ChatResponse = {
   choices: {
     message: { content: string };
