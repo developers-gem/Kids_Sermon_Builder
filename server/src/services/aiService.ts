@@ -29,6 +29,7 @@ export type GenerateLessonPlanInput = {
 
 export type GenerateLessonPlanResult = {
   plan: AiSermonPlan;
+  illustrationUrl: string | null;
   contentStatus: "ok" | "review_required";
   reviewRequired: boolean;
   validationWarnings: string[];
@@ -121,15 +122,19 @@ export async function generateLessonPlan(
   }
 
   warnings.push(...bibleCheck.warnings);
+  const illustrationUrl = await generateLessonIllustration(
+  plan.illustrationPrompt,
+);
 
   return {
+    illustrationUrl,
     plan,
     contentStatus: "review_required",
     reviewRequired: true,
     validationWarnings: warnings,
   };
 }
-
+ 
 export async function generateLessonIllustration(prompt: string): Promise<string | null> {
   try {
     return await generateIllustration(prompt);
