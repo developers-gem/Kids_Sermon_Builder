@@ -18,7 +18,7 @@ const FRIENDLY_MESSAGES: Partial<Record<string, string>> = {
   AUTH_REQUIRED: "Please log in to do that.",
   FORBIDDEN: "You don't have permission to do that.",
   NOT_FOUND: "That couldn't be found. It may have been deleted or moved.",
-  AI_GENERATION_FAILED: "The AI couldn't generate that right now. Please try again in a moment.",
+  AI_GENERATION_FAILED: "",
   AUDIO_GENERATION_FAILED: "Narration couldn't be generated right now. Please try again.",
   IMAGE_GENERATION_FAILED: "The image couldn't be generated right now. Please try again.",
   PDF_GENERATION_FAILED: "The PDF couldn't be created right now. Please try again.",
