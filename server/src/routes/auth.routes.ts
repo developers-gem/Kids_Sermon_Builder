@@ -13,7 +13,7 @@ authRouter.post("/refresh", authRateLimiter, authController.refresh);
 authRouter.post("/logout", authController.logout);
 authRouter.get("/me", requireAuth, authController.me);
 //user delete route
-authRouter.delete("/delete-user", requireAuth, authController.deleteUser);
+authRouter.post("/delete-user", requireAuth, authController.deleteUser);
 
 
 authRouter.post(
