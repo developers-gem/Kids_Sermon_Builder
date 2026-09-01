@@ -12,6 +12,10 @@ authRouter.post("/login", authRateLimiter, validate(LoginInput), authController.
 authRouter.post("/refresh", authRateLimiter, authController.refresh);
 authRouter.post("/logout", authController.logout);
 authRouter.get("/me", requireAuth, authController.me);
+//user delete route
+authRouter.delete("/delete-user", requireAuth, authController.deleteUser);
+
+
 authRouter.post(
   "/forgot-password",
   authRateLimiter,
@@ -24,3 +28,4 @@ authRouter.post(
   validate(ResetPasswordInput),
   authController.resetPassword,
 );
+

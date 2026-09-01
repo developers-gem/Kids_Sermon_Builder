@@ -191,4 +191,22 @@ export const authController = {
     res.clearCookie("ksb_refresh_token", { path: "/api/auth" });
     ok(res, {}, "Your password has been reset. Please log in again.");
   }),
+  // controller for deleting user account
+  deleteUser: asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.sub;
+    if (!userId) {
+      throw AppError.authRequired("User not authenticated.");
+    }
+
+    // Delete the user from the database
+    await User.findByIdAndDelete(userId);
+
+    // Clear the refresh token cookie
+    res.clearCookie("ksb_refresh_token", { path: "/api/auth" });
+
+    ok(res, {}, "User account deleted successfully.");
+  }),
 };
+
+
+
