@@ -192,20 +192,27 @@ export const authController = {
     ok(res, {}, "Your password has been reset. Please log in again.");
   }),
   // controller for deleting user account
-  deleteUser: asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.sub;
-    if (!userId) {
-      throw AppError.authRequired("User not authenticated.");
-    }
+ deleteUser: asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
 
-    // Delete the user from the database
-    await User.findByIdAndDelete(userId);
+  if (!email) {
+    throw AppError.notFound("Email is required to delete the account.");
+  }
 
-    // Clear the refresh token cookie
-    res.clearCookie("ksb_refresh_token", { path: "/api/auth" });
+  // Delete the user from the database by email
+  const deletedUser = await User.findOneAndDelete({ 
+    email: email.trim().toLowerCase() 
+  });
 
-    ok(res, {}, "User account deleted successfully.");
-  }),
+  if (!deletedUser) {
+    throw AppError.notFound("User with this email does not exist.");
+  }
+
+  // Clear the refresh token cookie
+  res.clearCookie("ksb_refresh_token", { path: "/api/auth" });
+
+  ok(res, {}, "User account deleted successfully.");
+}),
 };
 
 
