@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const DeleteUser = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +13,6 @@ const DeleteUser = () => {
   const handleDeleteUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-        
 
     try {
       const response = await fetch(
@@ -26,13 +27,13 @@ const DeleteUser = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('User deleted successfully');
+        toast.success('User deleted successfully');
         setEmail('');
       } else {
-        alert(`Error: ${data.message || 'Something went wrong'}`);
+        toast.error(`Error: ${data.message || 'Something went wrong'}`);
       }
     } catch (error) {
-      alert('Network error. Please try again later.');
+      toast.error('Network error. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +104,8 @@ const DeleteUser = () => {
         </form>
 
       </div>
+
+      <ToastContainer position="top-right" autoClose={4000} />
     </main>
   );
 };
