@@ -17,6 +17,7 @@ import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import PrivacyPolicy from "./privacyPolicyAndTerms$Conditions/PrivacyPolicy";
 import TermsAndConditions from "./privacyPolicyAndTerms$Conditions/TermsAndConditions";
+import DeleteUser from "./pages/DeleteUser";
 export function App() {
   return (
     <Routes>
@@ -43,6 +44,7 @@ export function App() {
         </Route>
         <Route path="*" element={<NotFoundPage />}/>
       </Route>
+      <Route path="/delete-user" element={<DeleteUser />} />
     </Routes>
   );
 }
