@@ -11,6 +11,7 @@ const DeleteUser = () => {
   const handleDeleteUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+        
 
     try {
       const response = await fetch(
