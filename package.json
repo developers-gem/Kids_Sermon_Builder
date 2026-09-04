@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "nodemailer": "^9.0.5",
+    "react-toastify": "^11.1.0",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
